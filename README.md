@@ -21,7 +21,7 @@
 
 ### 🌐 **Production URLs**
 - **🔗 Live API**: `https://api-warungtetangga.azurewebsites.net`
-- **📖 API Documentation**: `https://api-warungtetangga.azurewebsites.net/docs`
+- **📖 API Documentation**: `https://api-warungtetangga.azurewebsites.net/docs` ✅ **OpenAPI Fixed**
 - **❤️ Health Check**: `https://api-warungtetangga.azurewebsites.net/health`
 
 ---
@@ -39,6 +39,7 @@
 | **File Upload** | ✅ Complete | Azure Blob | Multi-image upload dengan CDN |
 | **AI Integration** | ✅ Complete | Gemini API | Product analysis dari gambar |
 | **Background Tasks** | ✅ Complete | Internal | Deadline automation |
+| **API Documentation** | ✅ Complete | `/docs` | **OpenAPI & Swagger UI Fixed** |
 
 ### 📊 **Development Statistics**
 - **🔗 API Endpoints**: 15 endpoints lengkap dengan dokumentasi
@@ -46,7 +47,7 @@
 - **🗄️ Database Models**: 4 models dengan relationships
 - **🧪 Test Coverage**: 42 test cases (31 passing, 7 borongan isolated)
 - **☁️ Cloud Integrations**: 4 external services terintegrasi
-- **📖 Documentation**: Auto-generated API docs + comprehensive README
+- **📖 Documentation**: **Auto-generated API docs + OpenAPI JSON Fixed**
 - **⚡ Serverless**: Azure Functions dengan auto-scaling & pay-per-use
 
 ### 🎯 **Azure Functions Advantages**
@@ -55,6 +56,7 @@
 - **🔧 No Server Management**: Fully managed serverless platform
 - **⚡ Fast Cold Start**: Optimized for Python FastAPI
 - **🔍 Built-in Monitoring**: Application Insights integration
+- **📚 OpenAPI Support**: **Fixed route mapping for documentation**
 
 ---
 
@@ -91,18 +93,20 @@ cp local.settings.json.example local.settings.json
 
 # 6. Run Azure Functions locally
 func start
+# ✅ API Documentation tersedia di: http://localhost:7071/api/docs
 ```
 
 **🌐 Local API**: `http://localhost:7071/api`  
-**📖 Local Docs**: `http://localhost:7071/api/docs`
+**📖 Local Docs**: `http://localhost:7071/api/docs` ✅ **OpenAPI Working**
 
 ### Azure Functions Project Structure
 ```
 warung-tetangga-api/
 ├── api/                    # Azure Functions folder
 │   ├── app/               # FastAPI application
+│   │   └── main.py        # ✅ Fixed root_path & OpenAPI config
 │   ├── function.json      # HTTP trigger configuration
-│   └── __init__.py        # Function entry point
+│   └── __init__.py        # ✅ Fixed ASGI path mapping
 ├── host.json              # Function app settings
 ├── requirements.txt       # Dependencies (includes azure-functions)
 ├── .funcignore           # Deployment ignore file
@@ -117,7 +121,8 @@ warung-tetangga-api/
 
 ### Azure Function App Configuration
 **Production Function App**: `api-warungtetangga`  
-**URL**: `https://api-warungtetangga.azurewebsites.net`
+**URL**: `https://api-warungtetangga.azurewebsites.net`  
+**Documentation**: `https://api-warungtetangga.azurewebsites.net/docs` ✅ **OpenAPI Fixed**
 
 ### Required API Keys & Services
 
@@ -209,7 +214,7 @@ GET    /                       # API welcome + version info
 GET    /health                 # Health check untuk monitoring
 ```
 
-**📖 Interactive Documentation**: `https://api-warungtetangga.azurewebsites.net/docs`
+**📖 Interactive Documentation**: `https://api-warungtetangga.azurewebsites.net/docs` ✅ **OpenAPI Fixed**
 
 ---
 
@@ -246,11 +251,8 @@ GET    /health                 # Health check untuk monitoring
     "version": "[3.*, 4.0.0)"
   },
   "functionTimeout": "00:05:00",
-  "httpWorker": {
-    "description": {
-      "defaultExecutablePath": "python3",
-      "arguments": ["-m", "azure.functions.worker"]
-    }
+  "http": {
+    "routePrefix": ""
   }
 }
 ```
@@ -283,6 +285,7 @@ GET    /health                 # Health check untuk monitoring
 - **Cold Start Mitigation**: Keep-alive strategies
 - **Connection Pooling**: Database connection optimization
 - **Bundle Size**: Minimized dependencies in deployment
+- **✅ OpenAPI Path Mapping**: Fixed ASGI scope configuration untuk docs
 
 ---
 
@@ -326,11 +329,15 @@ func azure functionapp publish api-warungtetangga --python
 
 # Check deployment status
 curl https://api-warungtetangga.azurewebsites.net/health
+
+# ✅ Test OpenAPI documentation
+curl https://api-warungtetangga.azurewebsites.net/docs
 ```
 
 ### 📊 **Production Monitoring**
 - **Application Insights**: Built-in monitoring dan logging
 - **Health Endpoint**: `https://api-warungtetangga.azurewebsites.net/health`
+- **OpenAPI Docs**: `https://api-warungtetangga.azurewebsites.net/docs` ✅ **Working**
 - **Function Metrics**: Request count, duration, error rate
 - **Custom Metrics**: Payment success rate, AI analysis performance
 
@@ -345,7 +352,7 @@ func start
 
 # Test endpoints
 curl http://localhost:7071/api/health
-curl http://localhost:7071/api/docs
+curl http://localhost:7071/api/docs  # ✅ OpenAPI working locally
 
 # Run test suite
 pytest -v tests/
@@ -356,7 +363,7 @@ pytest -v tests/
 # Health check
 curl https://api-warungtetangga.azurewebsites.net/health
 
-# API documentation
+# ✅ API documentation (OpenAPI fixed)
 curl https://api-warungtetangga.azurewebsites.net/docs
 
 # Authentication test
@@ -411,7 +418,7 @@ High Traffic (100k requests/day):  ~$50-100/month
 
 ### Production URLs
 - **🔗 API Base**: `https://api-warungtetangga.azurewebsites.net`
-- **📖 Documentation**: `https://api-warungtetangga.azurewebsites.net/docs`
+- **📖 Documentation**: `https://api-warungtetangga.azurewebsites.net/docs` ✅ **OpenAPI Fixed**
 - **❤️ Health Check**: `https://api-warungtetangga.azurewebsites.net/health`
 - **🔍 Application Insights**: Azure Portal monitoring
 
@@ -434,6 +441,7 @@ High Traffic (100k requests/day):  ~$50-100/month
 | **CI/CD Pipeline** | ✅ Complete | GitHub Actions deployment |
 | **Production Monitoring** | ✅ Complete | Application Insights integration |
 | **Security** | ✅ Complete | Azure-managed security |
+| **OpenAPI Documentation** | ✅ Complete | **Fixed path mapping & docs** |
 
 ### 🚀 **Ready for Enterprise Scale**
 **Warung Tetangga API** dengan Azure Functions menyediakan:
@@ -442,15 +450,18 @@ High Traffic (100k requests/day):  ~$50-100/month
 - **Enterprise-grade security** dengan Azure platform
 - **Global reach** dengan Azure's worldwide presence
 - **99.95% uptime SLA** untuk production workloads
+- **✅ Complete API Documentation** dengan OpenAPI/Swagger UI
 
 **🎯 Business Benefits**:
 - **Lower operational costs** dengan pay-per-use model
 - **Faster time-to-market** tanpa server provisioning
 - **Automatic scalability** untuk traffic spikes
 - **Enterprise security** built-in dengan Azure
+- **Professional API docs** untuk developer integration
 
 ---
 
 *Deployed with ❤️ on Azure Functions - Serverless untuk Indonesian communities*  
 *Production URL: https://api-warungtetangga.azurewebsites.net*  
+*API Docs: https://api-warungtetangga.azurewebsites.net/docs ✅ OpenAPI Fixed*  
 *Last Updated: January 2024* 

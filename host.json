@@ -15,5 +15,8 @@
   "functionTimeout": "00:05:00",
   "httpWorkerConfig": {
     "maxConcurrentRequests": 100
+  },
+  "http": {
+    "routePrefix": ""
   }
 } 

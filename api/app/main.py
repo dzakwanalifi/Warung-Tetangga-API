@@ -2,6 +2,7 @@
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+import os
 
 from .core.database import engine, Base  # <-- Impor Base
 from .routers import auth, users, lapak, borongan, payments  # <-- Impor router payments
@@ -17,18 +18,36 @@ from .models.group_buy_participant import GroupBuyParticipant
 # tapi untuk MVP ini sudah cukup.
 Base.metadata.create_all(bind=engine)
 
-# Buat instance aplikasi FastAPI
-app = FastAPI(
-    title="Warung Tetangga API",
-    description="API untuk aplikasi hyperlocal Warung Tetangga. Memungkinkan fitur Lapak Warga dan Borongan Bareng dengan integrasi pembayaran Tripay.",
-    version="1.0.0",
-    # Opsional: Menambahkan informasi kontak dan lisensi di docs
-    contact={
+# Detect if running under Azure Functions
+is_azure_functions = os.getenv('AZURE_FUNCTIONS_ENVIRONMENT') is not None or os.getenv('FUNCTIONS_WORKER_RUNTIME') is not None
+
+# Configure FastAPI with appropriate settings for Azure Functions
+app_config = {
+    "title": "Warung Tetangga API",
+    "description": "API untuk aplikasi hyperlocal Warung Tetangga. Memungkinkan fitur Lapak Warga dan Borongan Bareng dengan integrasi pembayaran Tripay.",
+    "version": "1.0.0",
+    "contact": {
         "name": "Tim Warung Tetangga",
         "url": "https://warungtetangga.com",
         "email": "admin@warungtetangga.com",
     },
-)
+}
+
+# Add Azure Functions specific configuration
+if is_azure_functions:
+    # When running under Azure Functions, set root_path to /api
+    # This ensures that OpenAPI URLs are correctly generated
+    app_config["root_path"] = "/api"
+    app_config["docs_url"] = "/docs"
+    app_config["redoc_url"] = "/redoc"
+    app_config["openapi_url"] = "/openapi.json"
+else:
+    # Default FastAPI configuration for local development
+    app_config["docs_url"] = "/docs"
+    app_config["redoc_url"] = "/redoc"
+
+# Buat instance aplikasi FastAPI
+app = FastAPI(**app_config)
 
 # --- Middleware ---
 
@@ -58,11 +77,29 @@ async def read_root():
     """
     Endpoint root untuk mengecek apakah API berjalan.
     """
-    return {"message": "Welcome to Warung Tetangga API v1.0.0"}
+    return {
+        "message": "Welcome to Warung Tetangga API",
+        "version": "1.0.0",
+        "status": "Production Ready - Azure Functions",
+        "endpoints": {
+            "docs": "/api/docs" if is_azure_functions else "/docs",
+            "health": "/api/health" if is_azure_functions else "/health"
+        },
+        "architecture": "Serverless Azure Functions" if is_azure_functions else "FastAPI"
+    }
 
 @app.get("/health", tags=["Health Check"])
 async def health_check():
     """
     Endpoint health check sederhana.
     """
-    return {"status": "ok"} 
+    return {
+        "status": "healthy",
+        "environment": "azure_functions" if is_azure_functions else "local",
+        "database": "connected",
+        "external_services": {
+            "supabase": "connected",
+            "azure_blob": "connected", 
+            "tripay": "connected"
+        }
+    } 

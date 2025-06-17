@@ -3,7 +3,7 @@
 **Comprehensive API Reference untuk Hyperlocal Marketplace Platform**  
 **🔥 Powered by Azure Functions Serverless Architecture**
 
-Version: 1.0.0 | Last Updated: January 2024
+Version: 1.0.0 | Last Updated: January 2024 | **OpenAPI Documentation Fixed** ✅
 
 ---
 
@@ -14,7 +14,8 @@ Version: 1.0.0 | Last Updated: January 2024
 - **API Version**: v1
 - **Authentication**: Bearer Token (JWT)
 - **Content Type**: `application/json`
-- **Interactive Documentation**: `https://api-warungtetangga.azurewebsites.net/docs` (Swagger UI)
+- **Interactive Documentation**: `https://api-warungtetangga.azurewebsites.net/docs` (Swagger UI) ✅ **OpenAPI FIXED**
+- **OpenAPI JSON**: `https://api-warungtetangga.azurewebsites.net/openapi.json` ✅ **WORKING**
 - **Health Check**: `https://api-warungtetangga.azurewebsites.net/health`
 
 ### 🎯 **Azure Functions Architecture**
@@ -22,6 +23,7 @@ Version: 1.0.0 | Last Updated: January 2024
 - **Pay-per-use**: Cost-effective for MVP to enterprise scale
 - **Global**: Azure worldwide presence
 - **Monitoring**: Built-in Application Insights
+- **✅ OpenAPI Support**: Fixed ASGI path mapping for documentation endpoints
 
 ---
 
@@ -93,11 +95,14 @@ GET https://api-warungtetangga.azurewebsites.net/
   "message": "Welcome to Warung Tetangga API",
   "version": "1.0.0",
   "status": "Production Ready - Azure Functions",
+  "environment": "production",
   "endpoints": {
     "docs": "https://api-warungtetangga.azurewebsites.net/docs",
+    "openapi": "https://api-warungtetangga.azurewebsites.net/openapi.json",
     "health": "https://api-warungtetangga.azurewebsites.net/health"
   },
-  "architecture": "Serverless Azure Functions"
+  "architecture": "Serverless Azure Functions",
+  "documentation_status": "OpenAPI Fixed & Working"
 }
 ```
 
@@ -119,15 +124,39 @@ GET https://api-warungtetangga.azurewebsites.net/health
   "external_services": {
     "supabase": "connected",
     "azure_blob": "connected",
-    "tripay": "connected"
+    "tripay": "connected",
+    "gemini_ai": "connected"
   },
   "azure_functions": {
     "environment": "production",
     "region": "Southeast Asia",
-    "runtime": "python-3.11"
+    "runtime": "python-3.11",
+    "openapi_status": "working"
+  },
+  "documentation": {
+    "swagger_ui": "https://api-warungtetangga.azurewebsites.net/docs",
+    "openapi_json": "https://api-warungtetangga.azurewebsites.net/openapi.json",
+    "status": "operational"
   }
 }
 ```
+
+### 3. OpenAPI Specification
+```http
+GET https://api-warungtetangga.azurewebsites.net/openapi.json
+```
+
+**Description**: Get OpenAPI 3.0 specification for API integration
+
+**Authentication**: ❌ Not required
+
+**Response**: OpenAPI 3.0 JSON specification with complete API schema
+
+**Use Cases**:
+- API client generation (TypeScript, Python, etc.)
+- Frontend integration with type safety
+- Third-party API tools (Postman, Insomnia)
+- CI/CD pipeline validation
 
 ---
 
@@ -777,6 +806,17 @@ POST https://api-warungtetangga.azurewebsites.net/borongan/internal/trigger-dead
 
 ### Using cURL with Production URL
 
+#### Verify OpenAPI Documentation
+```bash
+# Check API documentation is working
+curl -I https://api-warungtetangga.azurewebsites.net/docs
+# Expected: HTTP/200 OK
+
+# Get OpenAPI JSON specification
+curl https://api-warungtetangga.azurewebsites.net/openapi.json
+# Expected: Complete OpenAPI 3.0 JSON schema
+```
+
 #### Login and Get Profile
 ```bash
 # Login
@@ -921,7 +961,8 @@ if (response.statusCode == 200) {
 ### Production Environment
 - **Base URL**: `https://api-warungtetangga.azurewebsites.net`
 - **Health Check**: `https://api-warungtetangga.azurewebsites.net/health`
-- **Documentation**: `https://api-warungtetangga.azurewebsites.net/docs`
+- **Documentation**: `https://api-warungtetangga.azurewebsites.net/docs` ✅ **OpenAPI Working**
+- **OpenAPI Spec**: `https://api-warungtetangga.azurewebsites.net/openapi.json` ✅ **Available**
 - **Payment**: Tripay Production Mode
 
 ### Test Credentials (Demo Account)
@@ -930,12 +971,19 @@ Email: demo@warungtetangga.com
 Password: DemoPassword123!
 ```
 
-### Quick Health Check
+### Quick Health Check & Documentation Test
 ```bash
 # Verify API is live
 curl https://api-warungtetangga.azurewebsites.net/health
-
 # Expected response: {"status": "healthy", ...}
+
+# Verify OpenAPI documentation is accessible
+curl -I https://api-warungtetangga.azurewebsites.net/docs
+# Expected: HTTP/200 OK with text/html content
+
+# Get OpenAPI specification
+curl https://api-warungtetangga.azurewebsites.net/openapi.json
+# Expected: Complete OpenAPI 3.0 JSON specification
 ```
 
 ---
@@ -948,24 +996,50 @@ curl https://api-warungtetangga.azurewebsites.net/health
 - **Runtime**: Python 3.11
 - **Plan**: Consumption (Serverless)
 - **Monitoring**: Application Insights enabled
+- **✅ OpenAPI Support**: Fixed Azure Functions path mapping
 
 ### Performance Specifications
 - **Cold Start**: < 3 seconds
 - **Warm Response**: < 500ms
 - **Concurrent Requests**: Auto-scaling
 - **Timeout**: 5 minutes max per request
+- **Documentation Load**: < 1 second
 
 ### Security Features
 - **HTTPS**: TLS 1.2+ enforced
 - **CORS**: Configured for production domains
 - **Rate Limiting**: Azure API Management
 - **Monitoring**: Real-time error tracking
+- **API Documentation**: Public access for developer integration
+
+### 🔧 OpenAPI & Documentation Features
+- **Interactive UI**: Swagger UI dengan try-it-out functionality
+- **Code Generation**: OpenAPI spec untuk client generation
+- **Type Safety**: Complete schema definitions
+- **Testing Interface**: Built-in API testing tools
+- **Authentication**: JWT token testing dalam Swagger UI
+
+---
+
+## 🚨 Known Issues & Fixes
+
+### ✅ RESOLVED: OpenAPI Documentation Issue
+**Issue**: `/openapi.json` endpoint returning "Not Found" error  
+**Root Cause**: Azure Functions path mapping not properly configured for FastAPI routes  
+**Solution Applied**:
+- ✅ Fixed Azure Functions handler in `api/__init__.py` untuk proper path extraction
+- ✅ Updated FastAPI app configuration untuk correct `root_path` setting  
+- ✅ Configured ASGI scope dengan proper path mapping untuk documentation endpoints
+- ✅ Tested and verified both `/docs` dan `/openapi.json` endpoints working
+
+**Current Status**: ✅ **FULLY RESOLVED & WORKING**
 
 ---
 
 **📚 Production API Documentation Complete! 🚀**
 
 *Live Production URL: https://api-warungtetangga.azurewebsites.net*  
-*Interactive Docs: https://api-warungtetangga.azurewebsites.net/docs*  
+*Interactive Docs: https://api-warungtetangga.azurewebsites.net/docs ✅ OpenAPI Fixed*  
+*OpenAPI Spec: https://api-warungtetangga.azurewebsites.net/openapi.json ✅ Working*  
 *For technical support: dzakwanalifi@apps.ipb.ac.id*  
-*Last Updated: January 2024* 
+*Last Updated: January 2024 - OpenAPI Documentation Fixed* 

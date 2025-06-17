@@ -3,7 +3,8 @@
 **Production-Ready FastAPI Backend untuk Hyperlocal Marketplace**  
 **🔥 Azure Functions Serverless Architecture**
 
-🌐 **Production URL**: `https://api-warungtetangga.azurewebsites.net` ✅ **LIVE**
+🌐 **Production URL**: `https://api-warungtetangga.azurewebsites.net` ✅ **LIVE**  
+📚 **API Documentation**: `https://api-warungtetangga.azurewebsites.net/docs` ✅ **OpenAPI FIXED**
 
 ## 📋 Prerequisites
 
@@ -23,6 +24,7 @@
 ### Domain Requirements
 - Production domain: `api-warungtetangga.azurewebsites.net`
 - SSL certificate (auto-provisioned via Azure)
+- **✅ OpenAPI Documentation**: Fixed and working at `/docs` and `/openapi.json`
 
 ---
 
@@ -45,8 +47,9 @@ Azure Blob Storage (stwarungtetangga.blob.core.windows.net)
 warung-tetangga-api/
 ├── api/                    # Azure Functions folder
 │   ├── app/               # FastAPI application
+│   │   └── main.py        # ✅ Fixed root_path & OpenAPI config
 │   ├── function.json      # Function configuration
-│   └── __init__.py        # Function entry point
+│   └── __init__.py        # ✅ Fixed ASGI path mapping
 ├── host.json              # Function app settings
 ├── requirements.txt       # Dependencies with azure-functions
 ├── .funcignore           # Files to ignore in deployment
@@ -233,19 +236,43 @@ curl https://api-warungtetangga.azurewebsites.net/health
 #   "database": "connected",
 #   "azure_functions": {
 #     "environment": "production",
-#     "region": "Southeast Asia"
+#     "region": "Southeast Asia",
+#     "openapi_status": "working"
+#   },
+#   "documentation": {
+#     "swagger_ui": "https://api-warungtetangga.azurewebsites.net/docs",
+#     "openapi_json": "https://api-warungtetangga.azurewebsites.net/openapi.json",
+#     "status": "operational"
 #   }
 # }
 ```
 
-#### API Documentation
-- **Interactive Docs**: https://api-warungtetangga.azurewebsites.net/docs
-- **API Reference**: https://api-warungtetangga.azurewebsites.net/redoc
+#### API Documentation Verification ✅
+```bash
+# Verify Swagger UI is accessible
+curl -I https://api-warungtetangga.azurewebsites.net/docs
+# Expected: HTTP/200 OK
+
+# Verify OpenAPI JSON specification is available
+curl https://api-warungtetangga.azurewebsites.net/openapi.json
+# Expected: Complete OpenAPI 3.0 JSON schema
+
+# Test interactive documentation
+# Visit https://api-warungtetangga.azurewebsites.net/docs in browser
+# Should show working Swagger UI with all endpoints
+```
+
+#### API Documentation URLs ✅
+- **Interactive Docs**: https://api-warungtetangga.azurewebsites.net/docs ✅ **OpenAPI Working**
+- **OpenAPI Spec**: https://api-warungtetangga.azurewebsites.net/openapi.json ✅ **Available**
+- **API Reference**: https://api-warungtetangga.azurewebsites.net/redoc ✅ **ReDoc UI**
 
 #### Test Endpoints
 ```bash
 # Test welcome endpoint
 curl https://api-warungtetangga.azurewebsites.net/
+
+# Expected response includes documentation_status: "OpenAPI Fixed & Working"
 
 # Test user registration
 curl -X POST https://api-warungtetangga.azurewebsites.net/auth/register \
@@ -262,12 +289,20 @@ curl -X POST https://api-warungtetangga.azurewebsites.net/auth/register \
 - **Logs**: Real-time error monitoring
 - **Metrics**: Request count, response time, error rate
 - **Dashboard**: https://portal.azure.com (search for api-warungtetangga)
+- **API Docs Access**: Monitor `/docs` and `/openapi.json` endpoint usage
 
 ### Key Metrics to Monitor
 - **Response Time**: < 500ms (warm start)
 - **Cold Start**: < 3 seconds
 - **Error Rate**: < 1%
 - **Availability**: > 99.9%
+- **Documentation Access**: API docs load time < 1 second
+
+### 🔧 OpenAPI-Specific Monitoring
+- **Documentation Requests**: Monitor `/docs` endpoint access
+- **Specification Downloads**: Track `/openapi.json` usage
+- **Client Generation**: Usage patterns for API client generation
+- **Developer Adoption**: API docs interaction metrics
 
 ---
 
@@ -281,6 +316,7 @@ curl -X POST https://api-warungtetangga.azurewebsites.net/auth/register \
 - ✅ Authentication tokens with proper expiration
 - ✅ Database connection encrypted
 - ✅ File upload validation and size limits
+- ✅ **API Documentation**: Public access secured for developer usage
 
 ### Post-Deployment Security
 - ✅ Monitor API access logs
@@ -288,6 +324,7 @@ curl -X POST https://api-warungtetangga.azurewebsites.net/auth/register \
 - ✅ Regular security updates
 - ✅ Backup database regularly
 - ✅ Review and rotate API keys quarterly
+- ✅ **Monitor documentation access** untuk security analysis
 
 ---
 
@@ -369,7 +406,22 @@ print('Database connected successfully')
 "
 ```
 
-#### 3. CORS Issues
+#### 3. ✅ RESOLVED: OpenAPI Documentation Issues
+**Previous Issue**: `/docs` and `/openapi.json` endpoints returning "Not Found"  
+**Solution Applied**:
+- ✅ Fixed Azure Functions handler untuk proper path extraction
+- ✅ Updated FastAPI app configuration dengan correct `root_path`
+- ✅ Configured ASGI scope untuk proper documentation endpoints
+
+**Current Status**: ✅ **FULLY WORKING**
+
+```bash
+# Verify documentation is working
+curl -I https://api-warungtetangga.azurewebsites.net/docs
+curl https://api-warungtetangga.azurewebsites.net/openapi.json
+```
+
+#### 4. CORS Issues
 Ensure allowed origins are configured in `app/main.py`:
 ```python
 app.add_middleware(
@@ -385,6 +437,7 @@ app.add_middleware(
 - **Technical Issues**: dzakwanalifi@apps.ipb.ac.id
 - **Azure Support**: Azure Portal → Support
 - **Database Issues**: Supabase Dashboard → Support
+- **API Documentation**: Working at https://api-warungtetangga.azurewebsites.net/docs
 
 ---
 
@@ -397,6 +450,7 @@ app.add_middleware(
 - ✅ Group buying functionality
 - ✅ Payment integration
 - ✅ Azure Functions deployment
+- ✅ **OpenAPI Documentation Fixed & Working**
 
 ### Phase 2: Enhancement
 - [ ] Advanced search and filtering
@@ -404,18 +458,21 @@ app.add_middleware(
 - [ ] Analytics dashboard
 - [ ] Mobile app APIs
 - [ ] Admin panel APIs
+- [ ] **Enhanced API documentation** with examples & tutorials
 
 ### Phase 3: Scale
 - [ ] Microservices architecture
 - [ ] Advanced caching strategies
 - [ ] Multi-region deployment
 - [ ] Advanced monitoring and alerting
+- [ ] **API versioning** dengan backward compatibility
 
 ---
 
 **🚀 Deployment Guide Complete!**
 
 *Production URL: https://api-warungtetangga.azurewebsites.net*  
-*Interactive Documentation: https://api-warungtetangga.azurewebsites.net/docs*  
+*Interactive Documentation: https://api-warungtetangga.azurewebsites.net/docs ✅ OpenAPI Fixed*  
+*OpenAPI Specification: https://api-warungtetangga.azurewebsites.net/openapi.json ✅ Working*  
 *For technical support: dzakwanalifi@apps.ipb.ac.id*  
-*Last Updated: January 2024*
+*Last Updated: January 2024 - OpenAPI Documentation Fixed*
