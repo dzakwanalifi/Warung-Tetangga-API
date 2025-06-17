@@ -12,11 +12,8 @@
     "id": "Microsoft.Azure.Functions.ExtensionBundle",
     "version": "[3.*, 4.0.0)"
   },
-  "functionTimeout": "00:05:00",
-  "httpWorkerConfig": {
-    "maxConcurrentRequests": 100
-  },
+  "functions": ["function"],
   "http": {
     "routePrefix": ""
   }
-} 
+}
