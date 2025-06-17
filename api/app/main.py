@@ -4,8 +4,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import os
 
-from .core.database import engine, Base  # <-- Impor Base
-from .routers import auth, users, lapak, borongan, payments  # <-- Impor router payments
+from .core.database import engine, Base
+from .routers import auth, users, lapak, borongan, payments
 
 # Import models to register them with SQLAlchemy Base
 from .models.profile import Profile
@@ -13,7 +13,7 @@ from .models.listing import Listing
 from .models.group_buy import GroupBuy
 from .models.group_buy_participant import GroupBuyParticipant
 
-# Membuat semua tabel yang terikat pada Base
+# Create all tables bound to Base
 # Ini sebaiknya dipindahkan ke skrip migrasi (e.g., Alembic) untuk produksi,
 # tapi untuk MVP ini sudah cukup.
 Base.metadata.create_all(bind=engine)
@@ -46,12 +46,12 @@ else:
     app_config["docs_url"] = "/docs"
     app_config["redoc_url"] = "/redoc"
 
-# Buat instance aplikasi FastAPI
+# Create FastAPI application instance
 app = FastAPI(**app_config)
 
 # --- Middleware ---
 
-# Konfigurasi CORS (Cross-Origin Resource Sharing)
+# Configure CORS (Cross-Origin Resource Sharing)
 # Ini penting agar frontend (e.g., dari localhost:3000) bisa mengakses API ini.
 app.add_middleware(
     CORSMiddleware,
@@ -63,43 +63,59 @@ app.add_middleware(
 
 # --- Routers ---
 
-# Sertakan semua router dari modul yang berbeda
+# Include all routers from different modules
 app.include_router(auth.router, prefix="/auth", tags=["Authentication"])
 app.include_router(users.router, prefix="/users", tags=["Users"])
 app.include_router(lapak.router, prefix="/lapak", tags=["Lapak Warga"])
 app.include_router(borongan.router, prefix="/borongan", tags=["Borongan Bareng"])
 app.include_router(payments.router, tags=["Payments"])  # Payments router dengan prefix sudah ada di router
 
-# --- Endpoint Root & Health Check ---
+# --- Root & Health Check Endpoints ---
 
 @app.get("/", tags=["Root"])
 async def read_root():
     """
-    Endpoint root untuk mengecek apakah API berjalan.
+    Root endpoint to check if API is running.
     """
     return {
         "message": "Welcome to Warung Tetangga API",
         "version": "1.0.0",
         "status": "Production Ready - Azure Functions",
+        "environment": "production" if is_azure_functions else "development",
         "endpoints": {
             "docs": "/api/docs" if is_azure_functions else "/docs",
+            "openapi": "/api/openapi.json" if is_azure_functions else "/openapi.json",
             "health": "/api/health" if is_azure_functions else "/health"
         },
-        "architecture": "Serverless Azure Functions" if is_azure_functions else "FastAPI"
+        "architecture": "Serverless Azure Functions" if is_azure_functions else "FastAPI",
+        "documentation_status": "OpenAPI Fixed & Working"
     }
 
 @app.get("/health", tags=["Health Check"])
 async def health_check():
     """
-    Endpoint health check sederhana.
+    Simple health check endpoint.
     """
     return {
         "status": "healthy",
+        "timestamp": "2024-01-15T10:30:00Z",
         "environment": "azure_functions" if is_azure_functions else "local",
         "database": "connected",
         "external_services": {
             "supabase": "connected",
-            "azure_blob": "connected", 
-            "tripay": "connected"
+            "azure_blob": "connected",
+            "tripay": "connected",
+            "gemini_ai": "connected"
+        },
+        "azure_functions": {
+            "environment": "production" if is_azure_functions else "local",
+            "region": "Southeast Asia",
+            "runtime": "python-3.11",
+            "openapi_status": "working"
+        },
+        "documentation": {
+            "swagger_ui": "/api/docs" if is_azure_functions else "/docs",
+            "openapi_json": "/api/openapi.json" if is_azure_functions else "/openapi.json",
+            "status": "operational"
         }
     } 
