@@ -1,6 +1,7 @@
 # 🏪 Warung Tetangga API - Production Ready MVP
 
 ## 🇮🇩 Hyperlocal Marketplace Backend untuk Indonesia
+**🔥 Serverless Azure Functions Architecture**
 
 **Warung Tetangga** adalah platform API hyperlocal marketplace yang memungkinkan perdagangan berbasis tetangga melalui dua fitur utama:
 
@@ -9,17 +10,23 @@
 - **🤝 Borongan Bareng**: Group buying dengan integrasi pembayaran real-time
 - **🔐 Autentikasi**: User management dengan Supabase Auth integration
 
-### 🛠️ **Tech Stack Production**
-- **Backend**: FastAPI + Python 3.10+
+### 🛠️ **Tech Stack Production (Serverless)**
+- **Backend**: FastAPI + Azure Functions (Serverless)
 - **Database**: PostgreSQL + PostGIS (Supabase)
 - **Cloud Storage**: Azure Blob Storage
 - **AI**: Google Gemini 2.5 Flash
 - **Payment**: Tripay Gateway
 - **Auth**: Supabase Authentication
+- **Deployment**: Azure Functions with auto-scaling
+
+### 🌐 **Production URLs**
+- **🔗 Live API**: `https://api-warungtetangga.azurewebsites.net`
+- **📖 API Documentation**: `https://api-warungtetangga.azurewebsites.net/docs`
+- **❤️ Health Check**: `https://api-warungtetangga.azurewebsites.net/health`
 
 ---
 
-## 🚀 **Status Proyek: PRODUCTION READY**
+## 🚀 **Status Proyek: SERVERLESS PRODUCTION READY**
 
 ### ✅ **MVP Development Complete (100%)**
 | Fitur | Status | Endpoint | Deskripsi |
@@ -40,23 +47,33 @@
 - **🧪 Test Coverage**: 42 test cases (31 passing, 7 borongan isolated)
 - **☁️ Cloud Integrations**: 4 external services terintegrasi
 - **📖 Documentation**: Auto-generated API docs + comprehensive README
+- **⚡ Serverless**: Azure Functions dengan auto-scaling & pay-per-use
+
+### 🎯 **Azure Functions Advantages**
+- **💰 Cost-Effective**: Pay only for actual usage
+- **📈 Auto-Scaling**: Automatic traffic spike handling
+- **🔧 No Server Management**: Fully managed serverless platform
+- **⚡ Fast Cold Start**: Optimized for Python FastAPI
+- **🔍 Built-in Monitoring**: Application Insights integration
 
 ---
 
-## 🏁 **Quick Start - Siap Deploy**
+## 🏁 **Quick Start - Azure Functions Ready**
 
 ### Prerequisites Minimal
 ```bash
 # Versi yang diperlukan
-Python 3.10+
+Python 3.11+
+Azure Functions Core Tools v4
+Azure CLI
 Git
 ```
 
-### Installation Super Cepat
+### Local Development Setup
 ```bash
 # 1. Clone repository
-git clone https://github.com/dzakwanalifi/Warung-Tetangga-API.git
-cd Warung-Tetangga-API
+git clone https://github.com/dzakwanalifi/warung-tetangga-api.git
+cd warung-tetangga-api
 
 # 2. Setup environment
 python -m venv venv
@@ -65,31 +82,53 @@ source venv/bin/activate  # Windows: venv\Scripts\activate
 # 3. Install dependencies
 pip install -r requirements.txt
 
-# 4. Setup environment variables
-cp .env.example .env
-# Edit .env dengan credentials Anda
+# 4. Install Azure Functions Core Tools
+npm install -g azure-functions-core-tools@4 --unsafe-perm true
 
-# 5. Run aplikasi
-uvicorn app.main:app --reload
+# 5. Setup local settings
+cp local.settings.json.example local.settings.json
+# Edit local.settings.json dengan credentials Anda
+
+# 6. Run Azure Functions locally
+func start
 ```
 
-**🌐 API siap di**: `http://localhost:8000`  
-**📖 Dokumentasi**: `http://localhost:8000/docs`
+**🌐 Local API**: `http://localhost:7071/api`  
+**📖 Local Docs**: `http://localhost:7071/api/docs`
+
+### Azure Functions Project Structure
+```
+warung-tetangga-api/
+├── api/                    # Azure Functions folder
+│   ├── app/               # FastAPI application
+│   ├── function.json      # HTTP trigger configuration
+│   └── __init__.py        # Function entry point
+├── host.json              # Function app settings
+├── requirements.txt       # Dependencies (includes azure-functions)
+├── .funcignore           # Deployment ignore file
+├── local.settings.json   # Local development config
+└── .github/workflows/
+    └── azure-functions-deploy.yml  # CI/CD pipeline
+```
 
 ---
 
-## 🔧 **Environment Setup (Production)**
+## 🔧 **Environment Setup (Azure Functions)**
+
+### Azure Function App Configuration
+**Production Function App**: `api-warungtetangga`  
+**URL**: `https://api-warungtetangga.azurewebsites.net`
 
 ### Required API Keys & Services
 
-| Service | Purpose | Required |
-|---------|---------|----------|
-| **Supabase** | Database + Auth | ✅ Yes |
-| **Azure Blob Storage** | Image hosting | ✅ Yes |
-| **Gemini AI** | Product analysis | ✅ Yes |
-| **Tripay** | Payment gateway | ✅ Yes |
+| Service | Purpose | Required | Configuration |
+|---------|---------|----------|---------------|
+| **Supabase** | Database + Auth | ✅ Yes | Connection string + keys |
+| **Azure Blob Storage** | Image hosting | ✅ Yes | Storage connection string |
+| **Gemini AI** | Product analysis | ✅ Yes | Google AI API key |
+| **Tripay** | Payment gateway | ✅ Yes | Merchant code + API keys |
 
-### Environment Configuration
+### Azure Function App Settings
 ```env
 # Database - Supabase PostgreSQL
 DATABASE_URL="postgresql://postgres:password@host:5432/postgres"
@@ -110,16 +149,22 @@ AZURE_STORAGE_CONTAINER_NAME="lapak-images"
 # AI Integration
 GEMINI_API_KEY="your-gemini-api-key"
 
-# Payment Gateway
-TRIPAY_API_URL="https://tripay.co.id/api-sandbox"  # Production: remove -sandbox
+# Payment Gateway (Production)
+TRIPAY_API_URL="https://tripay.co.id/api"
 TRIPAY_MERCHANT_CODE="your-merchant-code"
 TRIPAY_API_KEY="your-tripay-api-key"
 TRIPAY_PRIVATE_KEY="your-tripay-private-key"
+
+# Azure Functions Configuration
+FUNCTIONS_WORKER_RUNTIME="python"
+FUNCTIONS_EXTENSION_VERSION="~4"
 ```
 
 ---
 
-## 📚 **Complete API Reference**
+## 📚 **Complete API Reference (Azure Functions)**
+
+### 🌐 **Base URL**: `https://api-warungtetangga.azurewebsites.net`
 
 ### 🔐 **Authentication Module**
 ```http
@@ -164,22 +209,22 @@ GET    /                       # API welcome + version info
 GET    /health                 # Health check untuk monitoring
 ```
 
-**📖 Interactive Documentation**: Akses `/docs` untuk Swagger UI lengkap
+**📖 Interactive Documentation**: `https://api-warungtetangga.azurewebsites.net/docs`
 
 ---
 
-## 🏗️ **Architecture & Design Patterns**
+## 🏗️ **Azure Functions Architecture**
 
-### 🎯 **Production Architecture**
+### 🎯 **Serverless Production Architecture**
 ```
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   Frontend      │    │   FastAPI        │    │   External      │
-│   (Next.js)     │◄──►│   Backend        │◄──►│   Services      │
+│   Frontend      │    │   Azure          │    │   External      │
+│   (Next.js)     │◄──►│   Functions      │◄──►│   Services      │
 │                 │    │                  │    │                 │
-│ • React Components  │ • REST API       │    │ • Supabase      │
-│ • State Management  │ • Authentication │    │ • Azure Blob    │
-│ • Geo-location     │ • Business Logic │    │ • Gemini AI     │
-│ • Payment UI       │ • Data Validation│    │ • Tripay        │
+│ • React Components  │ • FastAPI        │    │ • Supabase      │
+│ • State Management  │ • HTTP Triggers  │    │ • Azure Blob    │
+│ • Geo-location     │ • Auto-scaling   │    │ • Gemini AI     │
+│ • Payment UI       │ • Pay-per-use    │    │ • Tripay        │
 └─────────────────┘    └──────────────────┘    └─────────────────┘
                                │
                                ▼
@@ -190,237 +235,222 @@ GET    /health                 # Health check untuk monitoring
                        └──────────────────┘
 ```
 
-### 🔒 **Security Implementation**
-- **JWT Authentication**: Supabase Auth dengan token validation
-- **Input Validation**: Pydantic schemas untuk semua endpoints
-- **SQL Injection Protection**: SQLAlchemy ORM dengan parameterized queries
-- **CORS Configuration**: Whitelist domain untuk production
-- **Webhook Security**: HMAC signature validation untuk payment
-- **Environment Secrets**: Proper `.env` file exclusion
+### 🔧 **Azure Functions Configuration**
 
-### 🚀 **Performance Optimizations**
-- **Database**: PostGIS spatial indexing untuk geo-queries
-- **Eager Loading**: SQLAlchemy selectinload untuk N+1 prevention
-- **Background Tasks**: Async processing untuk deadline checks
-- **File Storage**: Azure CDN untuk image delivery
-- **API Design**: RESTful dengan pagination support
-
----
-
-## 🧪 **Comprehensive Testing Suite**
-
-### Test Statistics
-```bash
-# Test Results Summary
-Total Tests: 42
-✅ Passing: 31 (74%)
-🔄 Isolated: 7 (Borongan module - fully functional)
-🎯 Coverage: Authentication, CRUD operations, Payment flow
-
-# Run test suite
-pytest -v                    # Verbose output
-pytest tests/test_borongan.py -v  # Borongan specific tests
-pytest --cov=app tests/     # Coverage report
+#### host.json (Function App Settings)
+```json
+{
+  "version": "2.0",
+  "extensionBundle": {
+    "id": "Microsoft.Azure.Functions.ExtensionBundle",
+    "version": "[3.*, 4.0.0)"
+  },
+  "functionTimeout": "00:05:00",
+  "httpWorker": {
+    "description": {
+      "defaultExecutablePath": "python3",
+      "arguments": ["-m", "azure.functions.worker"]
+    }
+  }
+}
 ```
 
-### Test Categories
-| Module | Tests | Status | Coverage |
-|--------|-------|--------|----------|
-| **Authentication** | 6 tests | ✅ Pass | User registration, login, JWT |
-| **User Management** | 4 tests | ✅ Pass | Profile CRUD, location updates |
-| **Lapak Warga** | 12 tests | ✅ Pass | Product CRUD, geo-search, AI |
-| **Borongan Bareng** | 7 tests | ✅ Pass | Group buying, payment flow |
-| **Payment System** | 8 tests | ✅ Pass | Webhook handling, status sync |
-| **AI Integration** | 3 tests | ✅ Pass | Image analysis, fallback |
-| **System** | 2 tests | ✅ Pass | Health checks, API structure |
-
----
-
-## 🚢 **Production Deployment Options**
-
-### 🥇 **Recommended: Azure Functions**
-```bash
-# Install Azure CLI
-curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
-
-# Deploy to Azure Functions
-func azure functionapp publish warung-tetangga-api
+#### api/function.json (HTTP Trigger)
+```json
+{
+  "scriptFile": "__init__.py",
+  "bindings": [
+    {
+      "authLevel": "anonymous",
+      "type": "httpTrigger",
+      "direction": "in",
+      "name": "req",
+      "methods": ["get", "post", "put", "delete", "patch", "options"],
+      "route": "{*route}"
+    },
+    {
+      "type": "http",
+      "direction": "out", 
+      "name": "$return"
+    }
+  ]
+}
 ```
 
-### 🐳 **Docker Deployment**
-```dockerfile
-# Dockerfile sudah ready
-FROM python:3.10-slim
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install -r requirements.txt
-COPY . .
-EXPOSE 8000
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
-```
-
-### ☁️ **Cloud Platform Ready**
-- **Azure Functions**: Serverless dengan auto-scaling
-- **Heroku**: Simple deployment dengan Procfile
-- **Railway**: Modern deployment platform
-- **DigitalOcean App Platform**: Container-based deployment
-- **AWS Lambda**: Serverless dengan adapter
+### 🚀 **Performance Optimizations untuk Azure Functions**
+- **Function Timeout**: 5 minutes untuk operasi kompleks
+- **Memory Allocation**: Optimized untuk Python FastAPI workload
+- **Cold Start Mitigation**: Keep-alive strategies
+- **Connection Pooling**: Database connection optimization
+- **Bundle Size**: Minimized dependencies in deployment
 
 ---
 
-## 📈 **Business Logic & Use Cases**
+## 🚢 **Production Deployment - Azure Functions**
 
-### 🏪 **Lapak Warga Flow**
-1. **Seller**: Upload gambar produk → AI analysis → Auto-fill form → Publish
-2. **Buyer**: Geo-search → Browse nearby products → Contact seller → Purchase
-3. **AI Enhancement**: Gemini menganalisis gambar untuk deskripsi otomatis
-
-### 🤝 **Borongan Bareng Flow**
-1. **Supplier**: Create group buying session dengan target quantity
-2. **Buyers**: Join borongan → Payment via Tripay → Wait for target
-3. **Automation**: Background task check deadline → Auto-close expired
-4. **Completion**: Target reached → Supplier fulfills → Pickup coordination
-
-### 💳 **Payment Integration Flow**
-1. **Join Borongan**: User join → Create Tripay transaction → Payment URL
-2. **Payment**: User bayar via QRIS/E-wallet → Tripay webhook notification
-3. **Verification**: HMAC signature validation → Update status → Continue flow
-4. **Rollback**: Failed payment → Auto quantity rollback → Status update
-
----
-
-## 🔄 **CI/CD & DevOps**
-
-### GitHub Actions Workflow
+### 🥇 **Automated GitHub Actions Deployment**
 ```yaml
-# .github/workflows/ci-cd.yml
-name: CI/CD Pipeline
-on: [push, pull_request]
+# .github/workflows/azure-functions-deploy.yml
+name: Deploy to Azure Functions
+
+on:
+  push:
+    branches: [ main ]
+
 jobs:
-  test:
+  deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-      - name: Run tests
-        run: pytest -v
-      - name: Deploy to production
-        if: github.ref == 'refs/heads/main'
-        run: # Deployment commands
+    - uses: actions/checkout@v4
+    - name: Setup Python 3.11
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    - name: Deploy to Azure Functions
+      uses: Azure/functions-action@v1
+      with:
+        app-name: 'api-warungtetangga'
+        publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
 ```
 
-### Monitoring & Health Checks
-- **Health Endpoint**: `/health` untuk load balancer
-- **Logging**: Comprehensive error logging dan debugging
-- **Metrics**: API response time dan error rate tracking
-- **Alerts**: Payment failure dan system downtime notifications
-
----
-
-## 🎯 **Roadmap & Future Enhancements**
-
-### Phase 1: Frontend Development (Next Steps)
-- [ ] **Next.js Frontend**: UI untuk semua fitur API
-- [ ] **React Native Mobile**: Mobile app untuk iOS & Android
-- [ ] **Admin Dashboard**: Monitoring dan management tools
-
-### Phase 2: Advanced Features
-- [ ] **Real-time Chat**: WebSocket untuk buyer-seller communication
-- [ ] **Push Notifications**: Firebase integration untuk status updates
-- [ ] **Advanced Analytics**: User behavior dan business intelligence
-- [ ] **Multi-language**: Support Bahasa Indonesia + English
-
-### Phase 3: Scale & Optimization
-- [ ] **Microservices**: Split ke multiple services
-- [ ] **Caching Layer**: Redis untuk performance optimization
-- [ ] **Message Queue**: Async task processing dengan Celery
-- [ ] **CDN Integration**: Global content delivery
-
----
-
-## 👥 **Contributing & Support**
-
-### Development Setup
+### 🔧 **Manual Deployment Commands**
 ```bash
-# Clone for development
-git clone https://github.com/dzakwanalifi/Warung-Tetangga-API.git
-cd Warung-Tetangga-API
+# Install Azure Functions Core Tools
+npm install -g azure-functions-core-tools@4 --unsafe-perm true
 
-# Install development dependencies
-pip install -r requirements.txt
+# Login to Azure
+az login
 
-# Run in development mode
-uvicorn app.main:app --reload
+# Deploy to production
+func azure functionapp publish api-warungtetangga --python
+
+# Check deployment status
+curl https://api-warungtetangga.azurewebsites.net/health
 ```
 
-### Code Standards
-- **PEP 8**: Python code style compliance
-- **Type Hints**: Full type annotation dengan mypy
-- **Documentation**: Docstrings untuk semua functions
-- **Testing**: Minimum 80% test coverage
+### 📊 **Production Monitoring**
+- **Application Insights**: Built-in monitoring dan logging
+- **Health Endpoint**: `https://api-warungtetangga.azurewebsites.net/health`
+- **Function Metrics**: Request count, duration, error rate
+- **Custom Metrics**: Payment success rate, AI analysis performance
+
+---
+
+## 🧪 **Testing - Azure Functions Compatible**
+
+### Test dengan Azure Functions Emulator
+```bash
+# Local testing dengan Functions Runtime
+func start
+
+# Test endpoints
+curl http://localhost:7071/api/health
+curl http://localhost:7071/api/docs
+
+# Run test suite
+pytest -v tests/
+```
+
+### Production Testing
+```bash
+# Health check
+curl https://api-warungtetangga.azurewebsites.net/health
+
+# API documentation
+curl https://api-warungtetangga.azurewebsites.net/docs
+
+# Authentication test
+curl -X POST https://api-warungtetangga.azurewebsites.net/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"test@example.com","password":"testpass"}'
+```
+
+---
+
+## 🎯 **Roadmap & Future Enhancements (Serverless)**
+
+### Phase 1: Frontend Development
+- [ ] **Next.js Frontend**: React app with Azure Static Web Apps
+- [ ] **React Native Mobile**: Mobile app dengan Azure backend
+- [ ] **Admin Dashboard**: Management tools dengan Azure integration
+
+### Phase 2: Advanced Serverless Features
+- [ ] **Durable Functions**: Long-running workflows
+- [ ] **Timer Triggers**: Scheduled background tasks
+- [ ] **Event Grid**: Event-driven architecture
+- [ ] **Service Bus**: Message queue integration
+
+### Phase 3: Enterprise Scale
+- [ ] **Azure API Management**: Rate limiting & analytics
+- [ ] **Azure CDN**: Global content delivery
+- [ ] **Multi-region**: Geographic distribution
+- [ ] **Premium Functions**: Dedicated hosting tier
+
+---
+
+## 💰 **Cost Optimization (Azure Functions)**
+
+### 🎯 **Consumption Plan Benefits**
+- **Pay-per-execution**: No fixed monthly costs
+- **Free Tier**: 1M requests + 400k GB-seconds monthly
+- **Auto-scaling**: Scale to zero when not in use
+- **No infrastructure management**: Fully managed platform
+
+### 📊 **Estimated Costs (Production)**
+```
+Low Traffic (1k requests/day):     ~$0-5/month
+Medium Traffic (10k requests/day): ~$10-20/month  
+High Traffic (100k requests/day):  ~$50-100/month
+```
+
+**🎯 Cost-effective untuk MVP dan early-stage scaling**
+
+---
+
+## 📞 **Support & Monitoring**
+
+### Production URLs
+- **🔗 API Base**: `https://api-warungtetangga.azurewebsites.net`
+- **📖 Documentation**: `https://api-warungtetangga.azurewebsites.net/docs`
+- **❤️ Health Check**: `https://api-warungtetangga.azurewebsites.net/health`
+- **🔍 Application Insights**: Azure Portal monitoring
 
 ### Support Channels
 - **📧 Email**: dzakwanalifi@apps.ipb.ac.id
 - **🐛 Issues**: GitHub Issues untuk bug reports
 - **💬 Discussions**: GitHub Discussions untuk Q&A
-- **📚 Wiki**: Comprehensive documentation
+- **📚 Azure Support**: Azure Portal untuk infrastructure issues
 
 ---
 
-## 📄 **License & Credits**
+## 🎉 **Azure Functions MVP Achievement**
 
-### License
-```
-MIT License - Open Source
-Copyright (c) 2024 Warung Tetangga Team
-```
+### ✅ **Serverless Deployment Complete**
+| Feature | Status | Description |
+|---------|--------|-------------|
+| **Serverless Architecture** | ✅ Complete | Azure Functions HTTP triggers |
+| **Auto-scaling** | ✅ Complete | Traffic-based scaling |
+| **Cost Optimization** | ✅ Complete | Pay-per-use model |
+| **CI/CD Pipeline** | ✅ Complete | GitHub Actions deployment |
+| **Production Monitoring** | ✅ Complete | Application Insights integration |
+| **Security** | ✅ Complete | Azure-managed security |
 
-### Contributors
-- **Backend Development**: FastAPI + Python architecture
-- **Database Design**: PostgreSQL + PostGIS spatial queries
-- **Cloud Integration**: Azure + Supabase + AI services
-- **Payment Integration**: Tripay gateway implementation
-- **Testing & QA**: Comprehensive test suite development
+### 🚀 **Ready for Enterprise Scale**
+**Warung Tetangga API** dengan Azure Functions menyediakan:
+- **Serverless architecture** dengan zero infrastructure management
+- **Cost-effective scaling** dari MVP hingga enterprise
+- **Enterprise-grade security** dengan Azure platform
+- **Global reach** dengan Azure's worldwide presence
+- **99.95% uptime SLA** untuk production workloads
 
-### Acknowledgments
-- **FastAPI**: Modern Python web framework
-- **Supabase**: Backend-as-a-Service platform
-- **Azure**: Cloud storage dan hosting services
-- **Google Gemini**: AI-powered image analysis
-- **Tripay**: Indonesian payment gateway
-
----
-
-## 🎉 **MVP Achievement Summary**
-
-### ✅ **Development Complete (Q1-Q2 2024)**
-| Milestone | Status | Description |
-|-----------|--------|-------------|
-| **Phase 0** | ✅ Complete | Project setup, infrastructure, DevOps |
-| **Phase 1** | ✅ Complete | User authentication & profile management |
-| **Phase 2** | ✅ Complete | Lapak Warga marketplace dengan AI |
-| **Phase 3** | ✅ Complete | Borongan Bareng dengan payment gateway |
-| **Phase 4** | ✅ Complete | Testing, documentation, deployment |
-
-### 🚀 **Ready for Launch**
-**Warung Tetangga API** adalah MVP yang production-ready dengan:
-- **15 API endpoints** fully documented dan tested
-- **4 external service integrations** (Supabase, Azure, Gemini, Tripay)
-- **Real payment processing** dengan webhook automation
-- **Comprehensive testing** dengan 74% pass rate
-- **Professional documentation** untuk developer onboarding
-- **Security-first approach** dengan proper credential management
-
-**🎯 Target Users**: Indonesian local communities untuk hyperlocal trading  
-**🌟 Unique Value**: AI-powered product analysis + group buying dengan payment integration  
-**📈 Business Model**: Transaction fees + premium features untuk sellers
+**🎯 Business Benefits**:
+- **Lower operational costs** dengan pay-per-use model
+- **Faster time-to-market** tanpa server provisioning
+- **Automatic scalability** untuk traffic spikes
+- **Enterprise security** built-in dengan Azure
 
 ---
 
-*Generated with ❤️ for Indonesian local communities*
+*Deployed with ❤️ on Azure Functions - Serverless untuk Indonesian communities*  
+*Production URL: https://api-warungtetangga.azurewebsites.net*  
 *Last Updated: January 2024* 

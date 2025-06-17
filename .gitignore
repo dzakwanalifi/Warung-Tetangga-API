@@ -110,6 +110,12 @@ obj
 appsettings.json
 local.settings.json
 .azure/
+.azurefunctions/
+.python_packages/
+__blobstorage__/
+__queuestorage__/
+__azurite_db*__.json
+.funcignore
 
 # Temporary files
 *.tmp

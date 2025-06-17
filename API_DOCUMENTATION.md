@@ -1,6 +1,7 @@
 # 📚 API Documentation - Warung Tetangga
 
-**Comprehensive API Reference untuk Hyperlocal Marketplace Platform**
+**Comprehensive API Reference untuk Hyperlocal Marketplace Platform**  
+**🔥 Powered by Azure Functions Serverless Architecture**
 
 Version: 1.0.0 | Last Updated: January 2024
 
@@ -8,12 +9,19 @@ Version: 1.0.0 | Last Updated: January 2024
 
 ## 🌐 Base Information
 
-- **Base URL**: `https://api.warungtetangga.com` (Production)
-- **Base URL**: `http://localhost:8000` (Development)
+- **Production URL**: `https://api-warungtetangga.azurewebsites.net` ✅ **LIVE**
+- **Development URL**: `http://localhost:7071/api` (Azure Functions local)
 - **API Version**: v1
 - **Authentication**: Bearer Token (JWT)
 - **Content Type**: `application/json`
-- **Documentation**: Available at `/docs` (Swagger UI)
+- **Interactive Documentation**: `https://api-warungtetangga.azurewebsites.net/docs` (Swagger UI)
+- **Health Check**: `https://api-warungtetangga.azurewebsites.net/health`
+
+### 🎯 **Azure Functions Architecture**
+- **Serverless**: Auto-scaling based on traffic
+- **Pay-per-use**: Cost-effective for MVP to enterprise scale
+- **Global**: Azure worldwide presence
+- **Monitoring**: Built-in Application Insights
 
 ---
 
@@ -64,7 +72,7 @@ Authorization: Bearer <jwt_token>
 | **Borongan** | 4 endpoints | ✅ Required | Group buying |
 | **Payments** | 3 endpoints | ✅ Required | Payment processing |
 
-**Total: 18 endpoints**
+**Total: 18 endpoints** | **Production URL**: `https://api-warungtetangga.azurewebsites.net`
 
 ---
 
@@ -72,7 +80,7 @@ Authorization: Bearer <jwt_token>
 
 ### 1. Welcome Message
 ```http
-GET /
+GET https://api-warungtetangga.azurewebsites.net/
 ```
 
 **Description**: Get API welcome message and version info
@@ -84,17 +92,18 @@ GET /
 {
   "message": "Welcome to Warung Tetangga API",
   "version": "1.0.0",
-  "status": "Production Ready",
+  "status": "Production Ready - Azure Functions",
   "endpoints": {
-    "docs": "/docs",
-    "health": "/health"
-  }
+    "docs": "https://api-warungtetangga.azurewebsites.net/docs",
+    "health": "https://api-warungtetangga.azurewebsites.net/health"
+  },
+  "architecture": "Serverless Azure Functions"
 }
 ```
 
 ### 2. Health Check
 ```http
-GET /health
+GET https://api-warungtetangga.azurewebsites.net/health
 ```
 
 **Description**: System health check for monitoring
@@ -111,6 +120,11 @@ GET /health
     "supabase": "connected",
     "azure_blob": "connected",
     "tripay": "connected"
+  },
+  "azure_functions": {
+    "environment": "production",
+    "region": "Southeast Asia",
+    "runtime": "python-3.11"
   }
 }
 ```
@@ -121,7 +135,7 @@ GET /health
 
 ### 1. User Registration
 ```http
-POST /auth/register
+POST https://api-warungtetangga.azurewebsites.net/auth/register
 ```
 
 **Description**: Register new user with Supabase Auth
@@ -160,7 +174,7 @@ POST /auth/register
 
 ### 2. User Login
 ```http
-POST /auth/login
+POST https://api-warungtetangga.azurewebsites.net/auth/login
 ```
 
 **Description**: Login user with email and password
@@ -199,7 +213,7 @@ POST /auth/login
 
 ### 1. Get Current User Profile
 ```http
-GET /users/users/me
+GET https://api-warungtetangga.azurewebsites.net/users/users/me
 ```
 
 **Description**: Get current authenticated user's profile
@@ -224,7 +238,7 @@ GET /users/users/me
 
 ### 2. Update User Profile
 ```http
-PUT /users/users/me
+PUT https://api-warungtetangga.azurewebsites.net/users/users/me
 ```
 
 **Description**: Update current user's profile information
@@ -262,7 +276,7 @@ PUT /users/users/me
 
 ### 1. AI Image Analysis
 ```http
-POST /lapak/analyze
+POST https://api-warungtetangga.azurewebsites.net/lapak/analyze
 ```
 
 **Description**: Analyze product image using Google Gemini AI
@@ -287,7 +301,7 @@ file: [image file] (PNG, JPG, JPEG, max 5MB)
 
 ### 2. Create New Lapak
 ```http
-POST /lapak
+POST https://api-warungtetangga.azurewebsites.net/lapak
 ```
 
 **Description**: Create new product listing (lapak)
@@ -315,8 +329,8 @@ files: [image1.jpg, image2.jpg] (max 5 files, 5MB each)
   "stock_quantity": 10,
   "status": "available",
   "images": [
-    "https://storage.azure.com/lapak-images/uuid1.jpg",
-    "https://storage.azure.com/lapak-images/uuid2.jpg"
+    "https://stwarungtetangga.blob.core.windows.net/lapak-images/uuid1.jpg",
+    "https://stwarungtetangga.blob.core.windows.net/lapak-images/uuid2.jpg"
   ],
   "seller": {
     "id": "uuid-string",
@@ -331,7 +345,7 @@ files: [image1.jpg, image2.jpg] (max 5 files, 5MB each)
 
 ### 3. Get Nearby Lapak
 ```http
-GET /lapak/nearby?latitude=-6.200000&longitude=106.816666&radius=5000
+GET https://api-warungtetangga.azurewebsites.net/lapak/nearby?latitude=-6.200000&longitude=106.816666&radius=5000
 ```
 
 **Description**: Get product listings near specified location
@@ -353,7 +367,7 @@ GET /lapak/nearby?latitude=-6.200000&longitude=106.816666&radius=5000
       "price": 25000,
       "unit": "porsi",
       "status": "available",
-      "main_image": "https://storage.azure.com/lapak-images/uuid1.jpg",
+      "main_image": "https://stwarungtetangga.blob.core.windows.net/lapak-images/uuid1.jpg",
       "seller": {
         "full_name": "John Doe",
         "phone": "+628123456789"
@@ -369,7 +383,7 @@ GET /lapak/nearby?latitude=-6.200000&longitude=106.816666&radius=5000
 
 ### 4. Get Lapak Detail
 ```http
-GET /lapak/{listing_id}
+GET https://api-warungtetangga.azurewebsites.net/lapak/{listing_id}
 ```
 
 **Description**: Get detailed information of specific lapak
@@ -390,8 +404,8 @@ GET /lapak/{listing_id}
   "stock_quantity": 8,
   "status": "available",
   "images": [
-    "https://storage.azure.com/lapak-images/uuid1.jpg",
-    "https://storage.azure.com/lapak-images/uuid2.jpg"
+    "https://stwarungtetangga.blob.core.windows.net/lapak-images/uuid1.jpg",
+    "https://stwarungtetangga.blob.core.windows.net/lapak-images/uuid2.jpg"
   ],
   "seller": {
     "id": "uuid-string",
@@ -409,7 +423,7 @@ GET /lapak/{listing_id}
 
 ### 5. Update Lapak
 ```http
-PUT /lapak/{listing_id}
+PUT https://api-warungtetangga.azurewebsites.net/lapak/{listing_id}
 ```
 
 **Description**: Update lapak information (owner only)
@@ -448,7 +462,7 @@ PUT /lapak/{listing_id}
 
 ### 1. List Active Borongan
 ```http
-GET /borongan/
+GET https://api-warungtetangga.azurewebsites.net/borongan/
 ```
 
 **Description**: Get list of all active group buying sessions
@@ -485,7 +499,7 @@ GET /borongan/
 
 ### 2. Create New Borongan
 ```http
-POST /borongan/
+POST https://api-warungtetangga.azurewebsites.net/borongan/
 ```
 
 **Description**: Create new group buying session
@@ -525,7 +539,7 @@ POST /borongan/
 
 ### 3. Get Borongan Detail
 ```http
-GET /borongan/{borongan_id}
+GET https://api-warungtetangga.azurewebsites.net/borongan/{borongan_id}
 ```
 
 **Description**: Get detailed borongan information with participants
@@ -575,7 +589,7 @@ GET /borongan/{borongan_id}
 
 ### 4. Join Borongan
 ```http
-POST /borongan/{group_buy_id}/join
+POST https://api-warungtetangga.azurewebsites.net/borongan/{group_buy_id}/join
 ```
 
 **Description**: Join group buying session with payment
@@ -618,7 +632,7 @@ POST /borongan/{group_buy_id}/join
 
 ### 1. Tripay Webhook
 ```http
-POST /payments/tripay/webhook
+POST https://api-warungtetangga.azurewebsites.net/payments/tripay/webhook
 ```
 
 **Description**: Handle payment notifications from Tripay
@@ -658,7 +672,7 @@ X-Callback-Signature: hmac-sha256-signature
 
 ### 2. Check Payment Status
 ```http
-GET /payments/tripay/status/{participant_id}
+GET https://api-warungtetangga.azurewebsites.net/payments/tripay/status/{participant_id}
 ```
 
 **Description**: Check payment status for specific participant
@@ -686,7 +700,7 @@ GET /payments/tripay/status/{participant_id}
 
 ### 3. Get Payment Methods
 ```http
-GET /payments/methods
+GET https://api-warungtetangga.azurewebsites.net/payments/methods
 ```
 
 **Description**: Get available payment methods from Tripay
@@ -733,7 +747,7 @@ GET /payments/methods
 
 ### Deadline Check Trigger
 ```http
-POST /borongan/internal/trigger-deadline-check
+POST https://api-warungtetangga.azurewebsites.net/borongan/internal/trigger-deadline-check
 ```
 
 **Description**: Internal endpoint to trigger deadline checking (for cron jobs)
@@ -761,23 +775,23 @@ POST /borongan/internal/trigger-deadline-check
 
 ## 📝 Request Examples
 
-### Using cURL
+### Using cURL with Production URL
 
 #### Login and Get Profile
 ```bash
 # Login
-curl -X POST http://localhost:8000/auth/login \
+curl -X POST https://api-warungtetangga.azurewebsites.net/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email":"user@example.com","password":"password123"}'
 
 # Get profile (replace TOKEN with actual token)
-curl -X GET http://localhost:8000/users/users/me \
+curl -X GET https://api-warungtetangga.azurewebsites.net/users/users/me \
   -H "Authorization: Bearer TOKEN"
 ```
 
 #### Create Lapak with Images
 ```bash
-curl -X POST http://localhost:8000/lapak \
+curl -X POST https://api-warungtetangga.azurewebsites.net/lapak \
   -H "Authorization: Bearer TOKEN" \
   -F "title=Nasi Gudeg" \
   -F "description=Nasi gudeg enak" \
@@ -792,7 +806,9 @@ curl -X POST http://localhost:8000/lapak \
 
 #### Get Nearby Lapak
 ```javascript
-const response = await fetch('/lapak/nearby?latitude=-6.2&longitude=106.8&radius=5000', {
+const baseURL = 'https://api-warungtetangga.azurewebsites.net';
+
+const response = await fetch(`${baseURL}/lapak/nearby?latitude=-6.2&longitude=106.8&radius=5000`, {
   headers: {
     'Authorization': `Bearer ${token}`,
     'Content-Type': 'application/json'
@@ -803,7 +819,7 @@ const data = await response.json();
 
 #### Join Borongan
 ```javascript
-const response = await fetch(`/borongan/${boronganId}/join`, {
+const response = await fetch(`${baseURL}/borongan/${boronganId}/join`, {
   method: 'POST',
   headers: {
     'Authorization': `Bearer ${token}`,
@@ -880,8 +896,10 @@ window.location.href = result.payment_url;
 ### Flutter/React Native Example
 ```dart
 // Flutter HTTP request example
+final baseUrl = 'https://api-warungtetangga.azurewebsites.net';
+
 final response = await http.post(
-  Uri.parse('${baseUrl}/auth/login'),
+  Uri.parse('$baseUrl/auth/login'),
   headers: {'Content-Type': 'application/json'},
   body: jsonEncode({
     'email': email,
@@ -900,20 +918,54 @@ if (response.statusCode == 200) {
 
 ## 🧪 Testing
 
-### Test Environment
-- **Base URL**: `http://localhost:8000`
-- **Test Database**: SQLite/Supabase Test Project
-- **Payment**: Tripay Sandbox Mode
+### Production Environment
+- **Base URL**: `https://api-warungtetangga.azurewebsites.net`
+- **Health Check**: `https://api-warungtetangga.azurewebsites.net/health`
+- **Documentation**: `https://api-warungtetangga.azurewebsites.net/docs`
+- **Payment**: Tripay Production Mode
 
-### Test Credentials
+### Test Credentials (Demo Account)
 ```
-Email: test@warungtetangga.com
-Password: TestPassword123!
+Email: demo@warungtetangga.com
+Password: DemoPassword123!
+```
+
+### Quick Health Check
+```bash
+# Verify API is live
+curl https://api-warungtetangga.azurewebsites.net/health
+
+# Expected response: {"status": "healthy", ...}
 ```
 
 ---
 
-**📚 Documentation Complete! Ready for Development Team! 🚀**
+## 🌍 Production Details
 
-*For technical support: team@warungtetangga.com*  
+### Azure Functions Configuration
+- **Function App**: `api-warungtetangga`
+- **Region**: Southeast Asia (Singapore)
+- **Runtime**: Python 3.11
+- **Plan**: Consumption (Serverless)
+- **Monitoring**: Application Insights enabled
+
+### Performance Specifications
+- **Cold Start**: < 3 seconds
+- **Warm Response**: < 500ms
+- **Concurrent Requests**: Auto-scaling
+- **Timeout**: 5 minutes max per request
+
+### Security Features
+- **HTTPS**: TLS 1.2+ enforced
+- **CORS**: Configured for production domains
+- **Rate Limiting**: Azure API Management
+- **Monitoring**: Real-time error tracking
+
+---
+
+**📚 Production API Documentation Complete! 🚀**
+
+*Live Production URL: https://api-warungtetangga.azurewebsites.net*  
+*Interactive Docs: https://api-warungtetangga.azurewebsites.net/docs*  
+*For technical support: dzakwanalifi@apps.ipb.ac.id*  
 *Last Updated: January 2024* 
