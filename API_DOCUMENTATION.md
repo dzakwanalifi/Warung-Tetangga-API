@@ -2,7 +2,7 @@
 
 **Comprehensive API Reference untuk Hyperlocal Marketplace Platform**
 
-Version: 1.0.0 | Last Updated: Januari 2025
+Version: 1.0.0 | Last Updated: Juni 2025
 
 ---
 
@@ -1121,4 +1121,4 @@ export const warungWargarAPI = {
 *For technical support: dzakwanalifi@apps.ipb.ac.id*  
 *Production API: https://warungwarga-api.azurewebsites.net*  
 *Documentation: https://warungwarga-api.azurewebsites.net/docs*  
-*Last Updated: Januari 2025* 
+*Last Updated: Juni 2025* 

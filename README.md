@@ -18,7 +18,7 @@
 - **📚 Documentation**: https://warungwarga-api.azurewebsites.net/docs
 - **✅ Status**: Production Ready with Real Routers Active
 - **📊 Endpoints**: 19 total endpoints (14 router endpoints from 5 modules)
-- **🕐 Last Deploy**: Januari 2025 - Successfully Deployed
+- **🕐 Last Deploy**: Juni 2025 - Successfully Deployed
 - **⚡ Server**: Azure Functions (Serverless) with auto-scaling
 
 ### 🔧 **Tech Stack**
@@ -424,4 +424,4 @@ API sudah fully functional dan siap untuk:
 
 *Built with ❤️ for Indonesian local communities*  
 *© 2025 Warung Warga Team - Hyperlocal Marketplace Platform*  
-*Last Updated: Januari 2025* 
+*Last Updated: Juni 2025* 
