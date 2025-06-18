@@ -1,0 +1,69 @@
+# Azure Functions - Essential ignores only
+
+# Python cache and bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+
+# Virtual environments
+venv/
+.venv/
+env/
+.env/
+
+# Development files
+.env
+.vscode/
+.idea/
+*.log
+local.settings.json
+
+# Git
+.git/
+.gitignore
+
+# Testing
+tests/
+.pytest_cache/
+.coverage
+htmlcov/
+test_*.py
+*_test.py
+
+# Documentation (deploy only essential files)
+README.md
+API_DOCUMENTATION.md
+DEPLOYMENT.md
+WARUNG_TETANGGA_MVP_DEVELOPMENT_CHECKLIST.md
+*.md
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+test.db
+
+# Misc
+.DS_Store
+Thumbs.db
+*.tmp
+*.temp
+
+# Node modules (if any)
+node_modules/
+
+# Large packages that might be installed
+.pip/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Azure Functions local settings
+.azure/
+.vscode/
+bin/
+obj/ 

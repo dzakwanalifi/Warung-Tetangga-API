@@ -47,7 +47,7 @@ def analyze_image_from_file(file: UploadFile) -> LapakAnalysisResult:
 
         # Membuat prompt teks
         text_prompt = """
-        Anda adalah asisten ahli untuk pasar hyperlocal Indonesia bernama 'Warung Tetangga'.
+        Anda adalah asisten ahli untuk pasar hyperlocal Indonesia bernama 'Warung Warga'.
         Analisis gambar produk ini dan berikan informasi yang diminta dalam format JSON yang valid.
         Gunakan Bahasa Indonesia yang sederhana dan ramah untuk judul dan deskripsi.
         

@@ -1,29 +1,19 @@
-# 📚 API Documentation - Warung Tetangga
+# 📚 API Documentation - Warung Warga
 
-**Comprehensive API Reference untuk Hyperlocal Marketplace Platform**  
-**🔥 Powered by Azure Functions Serverless Architecture**
+**Comprehensive API Reference untuk Hyperlocal Marketplace Platform**
 
-Version: 1.0.0 | Last Updated: January 2024 | **OpenAPI Documentation Fixed** ✅
+Version: 1.0.0 | Last Updated: January 2024
 
 ---
 
 ## 🌐 Base Information
 
-- **Production URL**: `https://api-warungtetangga.azurewebsites.net` ✅ **LIVE**
-- **Development URL**: `http://localhost:7071/api` (Azure Functions local)
+- **Base URL**: `https://api.warungwarga.com` (Production)
+- **Base URL**: `http://localhost:8000` (Development)
 - **API Version**: v1
 - **Authentication**: Bearer Token (JWT)
 - **Content Type**: `application/json`
-- **Interactive Documentation**: `https://api-warungtetangga.azurewebsites.net/docs` (Swagger UI) ✅ **OpenAPI FIXED**
-- **OpenAPI JSON**: `https://api-warungtetangga.azurewebsites.net/openapi.json` ✅ **WORKING**
-- **Health Check**: `https://api-warungtetangga.azurewebsites.net/health`
-
-### 🎯 **Azure Functions Architecture**
-- **Serverless**: Auto-scaling based on traffic
-- **Pay-per-use**: Cost-effective for MVP to enterprise scale
-- **Global**: Azure worldwide presence
-- **Monitoring**: Built-in Application Insights
-- **✅ OpenAPI Support**: Fixed ASGI path mapping for documentation endpoints
+- **Documentation**: Available at `/docs` (Swagger UI)
 
 ---
 
@@ -74,7 +64,7 @@ Authorization: Bearer <jwt_token>
 | **Borongan** | 4 endpoints | ✅ Required | Group buying |
 | **Payments** | 3 endpoints | ✅ Required | Payment processing |
 
-**Total: 18 endpoints** | **Production URL**: `https://api-warungtetangga.azurewebsites.net`
+**Total: 18 endpoints**
 
 ---
 
@@ -82,7 +72,7 @@ Authorization: Bearer <jwt_token>
 
 ### 1. Welcome Message
 ```http
-GET https://api-warungtetangga.azurewebsites.net/
+GET /
 ```
 
 **Description**: Get API welcome message and version info
@@ -92,23 +82,19 @@ GET https://api-warungtetangga.azurewebsites.net/
 **Response**:
 ```json
 {
-  "message": "Welcome to Warung Tetangga API",
+  "message": "Welcome to Warung Warga API",
   "version": "1.0.0",
-  "status": "Production Ready - Azure Functions",
-  "environment": "production",
+  "status": "Production Ready",
   "endpoints": {
-    "docs": "https://api-warungtetangga.azurewebsites.net/docs",
-    "openapi": "https://api-warungtetangga.azurewebsites.net/openapi.json",
-    "health": "https://api-warungtetangga.azurewebsites.net/health"
-  },
-  "architecture": "Serverless Azure Functions",
-  "documentation_status": "OpenAPI Fixed & Working"
+    "docs": "/docs",
+    "health": "/health"
+  }
 }
 ```
 
 ### 2. Health Check
 ```http
-GET https://api-warungtetangga.azurewebsites.net/health
+GET /health
 ```
 
 **Description**: System health check for monitoring
@@ -124,39 +110,10 @@ GET https://api-warungtetangga.azurewebsites.net/health
   "external_services": {
     "supabase": "connected",
     "azure_blob": "connected",
-    "tripay": "connected",
-    "gemini_ai": "connected"
-  },
-  "azure_functions": {
-    "environment": "production",
-    "region": "Southeast Asia",
-    "runtime": "python-3.11",
-    "openapi_status": "working"
-  },
-  "documentation": {
-    "swagger_ui": "https://api-warungtetangga.azurewebsites.net/docs",
-    "openapi_json": "https://api-warungtetangga.azurewebsites.net/openapi.json",
-    "status": "operational"
+    "tripay": "connected"
   }
 }
 ```
-
-### 3. OpenAPI Specification
-```http
-GET https://api-warungtetangga.azurewebsites.net/openapi.json
-```
-
-**Description**: Get OpenAPI 3.0 specification for API integration
-
-**Authentication**: ❌ Not required
-
-**Response**: OpenAPI 3.0 JSON specification with complete API schema
-
-**Use Cases**:
-- API client generation (TypeScript, Python, etc.)
-- Frontend integration with type safety
-- Third-party API tools (Postman, Insomnia)
-- CI/CD pipeline validation
 
 ---
 
@@ -164,7 +121,7 @@ GET https://api-warungtetangga.azurewebsites.net/openapi.json
 
 ### 1. User Registration
 ```http
-POST https://api-warungtetangga.azurewebsites.net/auth/register
+POST /auth/register
 ```
 
 **Description**: Register new user with Supabase Auth
@@ -203,7 +160,7 @@ POST https://api-warungtetangga.azurewebsites.net/auth/register
 
 ### 2. User Login
 ```http
-POST https://api-warungtetangga.azurewebsites.net/auth/login
+POST /auth/login
 ```
 
 **Description**: Login user with email and password
@@ -242,7 +199,7 @@ POST https://api-warungtetangga.azurewebsites.net/auth/login
 
 ### 1. Get Current User Profile
 ```http
-GET https://api-warungtetangga.azurewebsites.net/users/users/me
+GET /users/users/me
 ```
 
 **Description**: Get current authenticated user's profile
@@ -267,7 +224,7 @@ GET https://api-warungtetangga.azurewebsites.net/users/users/me
 
 ### 2. Update User Profile
 ```http
-PUT https://api-warungtetangga.azurewebsites.net/users/users/me
+PUT /users/users/me
 ```
 
 **Description**: Update current user's profile information
@@ -305,7 +262,7 @@ PUT https://api-warungtetangga.azurewebsites.net/users/users/me
 
 ### 1. AI Image Analysis
 ```http
-POST https://api-warungtetangga.azurewebsites.net/lapak/analyze
+POST /lapak/analyze
 ```
 
 **Description**: Analyze product image using Google Gemini AI
@@ -330,7 +287,7 @@ file: [image file] (PNG, JPG, JPEG, max 5MB)
 
 ### 2. Create New Lapak
 ```http
-POST https://api-warungtetangga.azurewebsites.net/lapak
+POST /lapak
 ```
 
 **Description**: Create new product listing (lapak)
@@ -358,8 +315,8 @@ files: [image1.jpg, image2.jpg] (max 5 files, 5MB each)
   "stock_quantity": 10,
   "status": "available",
   "images": [
-    "https://stwarungtetangga.blob.core.windows.net/lapak-images/uuid1.jpg",
-    "https://stwarungtetangga.blob.core.windows.net/lapak-images/uuid2.jpg"
+    "https://storage.azure.com/lapak-images/uuid1.jpg",
+    "https://storage.azure.com/lapak-images/uuid2.jpg"
   ],
   "seller": {
     "id": "uuid-string",
@@ -374,7 +331,7 @@ files: [image1.jpg, image2.jpg] (max 5 files, 5MB each)
 
 ### 3. Get Nearby Lapak
 ```http
-GET https://api-warungtetangga.azurewebsites.net/lapak/nearby?latitude=-6.200000&longitude=106.816666&radius=5000
+GET /lapak/nearby?latitude=-6.200000&longitude=106.816666&radius=5000
 ```
 
 **Description**: Get product listings near specified location
@@ -396,7 +353,7 @@ GET https://api-warungtetangga.azurewebsites.net/lapak/nearby?latitude=-6.200000
       "price": 25000,
       "unit": "porsi",
       "status": "available",
-      "main_image": "https://stwarungtetangga.blob.core.windows.net/lapak-images/uuid1.jpg",
+      "main_image": "https://storage.azure.com/lapak-images/uuid1.jpg",
       "seller": {
         "full_name": "John Doe",
         "phone": "+628123456789"
@@ -412,7 +369,7 @@ GET https://api-warungtetangga.azurewebsites.net/lapak/nearby?latitude=-6.200000
 
 ### 4. Get Lapak Detail
 ```http
-GET https://api-warungtetangga.azurewebsites.net/lapak/{listing_id}
+GET /lapak/{listing_id}
 ```
 
 **Description**: Get detailed information of specific lapak
@@ -433,8 +390,8 @@ GET https://api-warungtetangga.azurewebsites.net/lapak/{listing_id}
   "stock_quantity": 8,
   "status": "available",
   "images": [
-    "https://stwarungtetangga.blob.core.windows.net/lapak-images/uuid1.jpg",
-    "https://stwarungtetangga.blob.core.windows.net/lapak-images/uuid2.jpg"
+    "https://storage.azure.com/lapak-images/uuid1.jpg",
+    "https://storage.azure.com/lapak-images/uuid2.jpg"
   ],
   "seller": {
     "id": "uuid-string",
@@ -452,7 +409,7 @@ GET https://api-warungtetangga.azurewebsites.net/lapak/{listing_id}
 
 ### 5. Update Lapak
 ```http
-PUT https://api-warungtetangga.azurewebsites.net/lapak/{listing_id}
+PUT /lapak/{listing_id}
 ```
 
 **Description**: Update lapak information (owner only)
@@ -491,7 +448,7 @@ PUT https://api-warungtetangga.azurewebsites.net/lapak/{listing_id}
 
 ### 1. List Active Borongan
 ```http
-GET https://api-warungtetangga.azurewebsites.net/borongan/
+GET /borongan/
 ```
 
 **Description**: Get list of all active group buying sessions
@@ -528,7 +485,7 @@ GET https://api-warungtetangga.azurewebsites.net/borongan/
 
 ### 2. Create New Borongan
 ```http
-POST https://api-warungtetangga.azurewebsites.net/borongan/
+POST /borongan/
 ```
 
 **Description**: Create new group buying session
@@ -568,7 +525,7 @@ POST https://api-warungtetangga.azurewebsites.net/borongan/
 
 ### 3. Get Borongan Detail
 ```http
-GET https://api-warungtetangga.azurewebsites.net/borongan/{borongan_id}
+GET /borongan/{borongan_id}
 ```
 
 **Description**: Get detailed borongan information with participants
@@ -618,7 +575,7 @@ GET https://api-warungtetangga.azurewebsites.net/borongan/{borongan_id}
 
 ### 4. Join Borongan
 ```http
-POST https://api-warungtetangga.azurewebsites.net/borongan/{group_buy_id}/join
+POST /borongan/{group_buy_id}/join
 ```
 
 **Description**: Join group buying session with payment
@@ -661,7 +618,7 @@ POST https://api-warungtetangga.azurewebsites.net/borongan/{group_buy_id}/join
 
 ### 1. Tripay Webhook
 ```http
-POST https://api-warungtetangga.azurewebsites.net/payments/tripay/webhook
+POST /payments/tripay/webhook
 ```
 
 **Description**: Handle payment notifications from Tripay
@@ -701,7 +658,7 @@ X-Callback-Signature: hmac-sha256-signature
 
 ### 2. Check Payment Status
 ```http
-GET https://api-warungtetangga.azurewebsites.net/payments/tripay/status/{participant_id}
+GET /payments/tripay/status/{participant_id}
 ```
 
 **Description**: Check payment status for specific participant
@@ -729,7 +686,7 @@ GET https://api-warungtetangga.azurewebsites.net/payments/tripay/status/{partici
 
 ### 3. Get Payment Methods
 ```http
-GET https://api-warungtetangga.azurewebsites.net/payments/methods
+GET /payments/methods
 ```
 
 **Description**: Get available payment methods from Tripay
@@ -776,7 +733,7 @@ GET https://api-warungtetangga.azurewebsites.net/payments/methods
 
 ### Deadline Check Trigger
 ```http
-POST https://api-warungtetangga.azurewebsites.net/borongan/internal/trigger-deadline-check
+POST /borongan/internal/trigger-deadline-check
 ```
 
 **Description**: Internal endpoint to trigger deadline checking (for cron jobs)
@@ -804,34 +761,23 @@ POST https://api-warungtetangga.azurewebsites.net/borongan/internal/trigger-dead
 
 ## 📝 Request Examples
 
-### Using cURL with Production URL
-
-#### Verify OpenAPI Documentation
-```bash
-# Check API documentation is working
-curl -I https://api-warungtetangga.azurewebsites.net/docs
-# Expected: HTTP/200 OK
-
-# Get OpenAPI JSON specification
-curl https://api-warungtetangga.azurewebsites.net/openapi.json
-# Expected: Complete OpenAPI 3.0 JSON schema
-```
+### Using cURL
 
 #### Login and Get Profile
 ```bash
 # Login
-curl -X POST https://api-warungtetangga.azurewebsites.net/auth/login \
+curl -X POST http://localhost:8000/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email":"user@example.com","password":"password123"}'
 
 # Get profile (replace TOKEN with actual token)
-curl -X GET https://api-warungtetangga.azurewebsites.net/users/users/me \
+curl -X GET http://localhost:8000/users/users/me \
   -H "Authorization: Bearer TOKEN"
 ```
 
 #### Create Lapak with Images
 ```bash
-curl -X POST https://api-warungtetangga.azurewebsites.net/lapak \
+curl -X POST http://localhost:8000/lapak \
   -H "Authorization: Bearer TOKEN" \
   -F "title=Nasi Gudeg" \
   -F "description=Nasi gudeg enak" \
@@ -846,9 +792,7 @@ curl -X POST https://api-warungtetangga.azurewebsites.net/lapak \
 
 #### Get Nearby Lapak
 ```javascript
-const baseURL = 'https://api-warungtetangga.azurewebsites.net';
-
-const response = await fetch(`${baseURL}/lapak/nearby?latitude=-6.2&longitude=106.8&radius=5000`, {
+const response = await fetch('/lapak/nearby?latitude=-6.2&longitude=106.8&radius=5000', {
   headers: {
     'Authorization': `Bearer ${token}`,
     'Content-Type': 'application/json'
@@ -859,7 +803,7 @@ const data = await response.json();
 
 #### Join Borongan
 ```javascript
-const response = await fetch(`${baseURL}/borongan/${boronganId}/join`, {
+const response = await fetch(`/borongan/${boronganId}/join`, {
   method: 'POST',
   headers: {
     'Authorization': `Bearer ${token}`,
@@ -936,10 +880,8 @@ window.location.href = result.payment_url;
 ### Flutter/React Native Example
 ```dart
 // Flutter HTTP request example
-final baseUrl = 'https://api-warungtetangga.azurewebsites.net';
-
 final response = await http.post(
-  Uri.parse('$baseUrl/auth/login'),
+  Uri.parse('${baseUrl}/auth/login'),
   headers: {'Content-Type': 'application/json'},
   body: jsonEncode({
     'email': email,
@@ -958,88 +900,20 @@ if (response.statusCode == 200) {
 
 ## 🧪 Testing
 
-### Production Environment
-- **Base URL**: `https://api-warungtetangga.azurewebsites.net`
-- **Health Check**: `https://api-warungtetangga.azurewebsites.net/health`
-- **Documentation**: `https://api-warungtetangga.azurewebsites.net/docs` ✅ **OpenAPI Working**
-- **OpenAPI Spec**: `https://api-warungtetangga.azurewebsites.net/openapi.json` ✅ **Available**
-- **Payment**: Tripay Production Mode
+### Test Environment
+- **Base URL**: `http://localhost:8000`
+- **Test Database**: SQLite/Supabase Test Project
+- **Payment**: Tripay Sandbox Mode
 
-### Test Credentials (Demo Account)
+### Test Credentials
 ```
-Email: demo@warungtetangga.com
-Password: DemoPassword123!
-```
-
-### Quick Health Check & Documentation Test
-```bash
-# Verify API is live
-curl https://api-warungtetangga.azurewebsites.net/health
-# Expected response: {"status": "healthy", ...}
-
-# Verify OpenAPI documentation is accessible
-curl -I https://api-warungtetangga.azurewebsites.net/docs
-# Expected: HTTP/200 OK with text/html content
-
-# Get OpenAPI specification
-curl https://api-warungtetangga.azurewebsites.net/openapi.json
-# Expected: Complete OpenAPI 3.0 JSON specification
+Email: test@warungwarga.com
+Password: TestPassword123!
 ```
 
 ---
 
-## 🌍 Production Details
+**📚 Documentation Complete! Ready for Development Team! 🚀**
 
-### Azure Functions Configuration
-- **Function App**: `api-warungtetangga`
-- **Region**: Southeast Asia (Singapore)
-- **Runtime**: Python 3.11
-- **Plan**: Consumption (Serverless)
-- **Monitoring**: Application Insights enabled
-- **✅ OpenAPI Support**: Fixed Azure Functions path mapping
-
-### Performance Specifications
-- **Cold Start**: < 3 seconds
-- **Warm Response**: < 500ms
-- **Concurrent Requests**: Auto-scaling
-- **Timeout**: 5 minutes max per request
-- **Documentation Load**: < 1 second
-
-### Security Features
-- **HTTPS**: TLS 1.2+ enforced
-- **CORS**: Configured for production domains
-- **Rate Limiting**: Azure API Management
-- **Monitoring**: Real-time error tracking
-- **API Documentation**: Public access for developer integration
-
-### 🔧 OpenAPI & Documentation Features
-- **Interactive UI**: Swagger UI dengan try-it-out functionality
-- **Code Generation**: OpenAPI spec untuk client generation
-- **Type Safety**: Complete schema definitions
-- **Testing Interface**: Built-in API testing tools
-- **Authentication**: JWT token testing dalam Swagger UI
-
----
-
-## 🚨 Known Issues & Fixes
-
-### ✅ RESOLVED: OpenAPI Documentation Issue
-**Issue**: `/openapi.json` endpoint returning "Not Found" error  
-**Root Cause**: Azure Functions path mapping not properly configured for FastAPI routes  
-**Solution Applied**:
-- ✅ Fixed Azure Functions handler in `api/__init__.py` untuk proper path extraction
-- ✅ Updated FastAPI app configuration untuk correct `root_path` setting  
-- ✅ Configured ASGI scope dengan proper path mapping untuk documentation endpoints
-- ✅ Tested and verified both `/docs` dan `/openapi.json` endpoints working
-
-**Current Status**: ✅ **FULLY RESOLVED & WORKING**
-
----
-
-**📚 Production API Documentation Complete! 🚀**
-
-*Live Production URL: https://api-warungtetangga.azurewebsites.net*  
-*Interactive Docs: https://api-warungtetangga.azurewebsites.net/docs ✅ OpenAPI Fixed*  
-*OpenAPI Spec: https://api-warungtetangga.azurewebsites.net/openapi.json ✅ Working*  
-*For technical support: dzakwanalifi@apps.ipb.ac.id*  
-*Last Updated: January 2024 - OpenAPI Documentation Fixed* 
+*For technical support: team@warungwarga.com*  
+*Last Updated: January 2024* 

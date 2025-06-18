@@ -1,10 +1,6 @@
-# 🚀 Deployment Guide - Warung Tetangga API
+# 🚀 Deployment Guide - Warung Warga API
 
-**Production-Ready FastAPI Backend untuk Hyperlocal Marketplace**  
-**🔥 Azure Functions Serverless Architecture**
-
-🌐 **Production URL**: `https://api-warungtetangga.azurewebsites.net` ✅ **LIVE**  
-📚 **API Documentation**: `https://api-warungtetangga.azurewebsites.net/docs` ✅ **OpenAPI FIXED**
+**Production-Ready FastAPI Backend untuk Hyperlocal Marketplace**
 
 ## 📋 Prerequisites
 
@@ -15,16 +11,9 @@
 - ✅ **Tripay Account** (untuk payment gateway)
 - ✅ **Google Cloud** (untuk Gemini AI)
 
-### Required Tools
-- Azure CLI (`az`)
-- Azure Functions Core Tools (`func`)
-- Python 3.11+
-- Git
-
 ### Domain Requirements
-- Production domain: `api-warungtetangga.azurewebsites.net`
+- Custom domain (recommended)
 - SSL certificate (auto-provisioned via Azure)
-- **✅ OpenAPI Documentation**: Fixed and working at `/docs` and `/openapi.json`
 
 ---
 
@@ -33,30 +22,13 @@
 ```
 Frontend (Vercel/Netlify)
     ↓ HTTPS API Calls
-Backend API (Azure Functions - api-warungtetangga.azurewebsites.net)
+Backend API (Azure Functions/App Service)
     ↓ Database Queries
 PostgreSQL (Supabase)
     ↓ File Storage
-Azure Blob Storage (stwarungtetangga.blob.core.windows.net)
+Azure Blob Storage
     ↓ External Services
 [Tripay] [Google Gemini] [Supabase Auth]
-```
-
-**Production Project Structure:**
-```
-warung-tetangga-api/
-├── api/                    # Azure Functions folder
-│   ├── app/               # FastAPI application
-│   │   └── main.py        # ✅ Fixed root_path & OpenAPI config
-│   ├── function.json      # Function configuration
-│   └── __init__.py        # ✅ Fixed ASGI path mapping
-├── host.json              # Function app settings
-├── requirements.txt       # Dependencies with azure-functions
-├── .funcignore           # Files to ignore in deployment
-├── local.settings.json   # Local development settings
-└── .github/
-    └── workflows/
-        └── azure-functions-deploy.yml  # CI/CD pipeline
 ```
 
 ---
@@ -75,7 +47,7 @@ DATABASE_URL=postgresql://postgres:password@host:5432/database
 ### 2. Azure Blob Storage
 ```bash
 # Azure Storage Account
-AZURE_STORAGE_CONNECTION_STRING=DefaultEndpointsProtocol=https;AccountName=stwarungtetangga;AccountKey=...
+AZURE_STORAGE_CONNECTION_STRING=DefaultEndpointsProtocol=https;AccountName=...
 AZURE_STORAGE_CONTAINER_NAME=lapak-images
 ```
 
@@ -85,7 +57,7 @@ AZURE_STORAGE_CONTAINER_NAME=lapak-images
 TRIPAY_API_KEY=your-api-key
 TRIPAY_PRIVATE_KEY=your-private-key
 TRIPAY_MERCHANT_CODE=your-merchant-code
-TRIPAY_MODE=production  # or 'sandbox' for testing
+TRIPAY_MODE=sandbox  # atau 'production'
 ```
 
 ### 4. AI Integration (Google Gemini)
@@ -101,378 +73,444 @@ SECRET_KEY=your-super-secret-key-min-32-chars
 ALGORITHM=HS256
 ACCESS_TOKEN_EXPIRE_MINUTES=30
 
-# CORS Settings (configured in FastAPI app)
+# CORS Settings
 ALLOWED_ORIGINS=["https://yourdomain.com", "http://localhost:3000"]
 ```
 
 ---
 
-## ☁️ Primary Deployment: Azure Functions
+## ☁️ Deployment Options
 
-### 🎯 Why Azure Functions?
-- ✅ **Serverless** - No server management
-- ✅ **Auto-scaling** - Handles traffic spikes automatically
-- ✅ **Cost-effective** - Pay only for actual usage ($0 for low traffic)
-- ✅ **Built-in monitoring** - Application Insights included
-- ✅ **Easy CI/CD** - GitHub Actions integration
-- ✅ **Production Ready** - Currently serving at `api-warungtetangga.azurewebsites.net`
+### Option 1: Azure App Service (Recommended)
 
-### Step 1: Setup Azure Function App
-
-#### Create Function App via Azure CLI
+#### Step 1: Create Azure App Service
 ```bash
-# Login to Azure
-az login
-
-# Create Resource Group
-az group create --name warung-tetangga-rg --location "Southeast Asia"
-
-# Create Storage Account (required for Functions)
-az storage account create \
-  --name stwarungtetangga \
-  --resource-group warung-tetangga-rg \
-  --location "Southeast Asia" \
-  --sku Standard_LRS
-
-# Create Function App
-az functionapp create \
-  --resource-group warung-tetangga-rg \
-  --consumption-plan-location "Southeast Asia" \
-  --runtime python \
-  --runtime-version 3.11 \
-  --functions-version 4 \
-  --name api-warungtetangga \
-  --storage-account stwarungtetangga
+# Azure CLI Commands
+az webapp create \
+  --resource-group Warung-Warga-rg \
+  --plan Warung-Warga-plan \
+  --name Warung-Warga-api \
+  --runtime "PYTHON|3.11"
 ```
 
-### Step 2: Configure Environment Variables
-
-#### Via Azure CLI
+#### Step 2: Configure Environment Variables
 ```bash
-az functionapp config appsettings set \
-  --name api-warungtetangga \
-  --resource-group warung-tetangga-rg \
+# Set environment variables via Azure Portal atau CLI
+az webapp config appsettings set \
+  --resource-group Warung-Warga-rg \
+  --name Warung-Warga-api \
   --settings \
-    "DATABASE_URL=your-supabase-connection-string" \
-    "SUPABASE_URL=https://your-project.supabase.co" \
-    "SUPABASE_ANON_KEY=your-anon-key" \
-    "SUPABASE_SERVICE_ROLE_KEY=your-service-role-key" \
-    "AZURE_STORAGE_CONNECTION_STRING=your-azure-storage-connection" \
-    "AZURE_STORAGE_CONTAINER_NAME=lapak-images" \
-    "TRIPAY_API_KEY=your-tripay-api-key" \
-    "TRIPAY_PRIVATE_KEY=your-tripay-private-key" \
-    "TRIPAY_MERCHANT_CODE=your-merchant-code" \
-    "TRIPAY_MODE=production" \
-    "GOOGLE_AI_API_KEY=your-gemini-api-key" \
-    "SECRET_KEY=your-super-secret-key-min-32-chars" \
-    "ALGORITHM=HS256" \
-    "ACCESS_TOKEN_EXPIRE_MINUTES=30"
+    DATABASE_URL="your-database-url" \
+    SUPABASE_URL="your-supabase-url" \
+    # ... (semua environment variables)
 ```
 
-### Step 3: Deploy via Azure Functions Core Tools
+#### Step 3: Deploy via GitHub Actions
+```yaml
+# .github/workflows/deploy.yml (sudah tersedia)
+name: Deploy to Azure App Service
+on:
+  push:
+    branches: [ main ]
 
-#### Local Development Setup
-```bash
-# Install Azure Functions Core Tools
-npm install -g azure-functions-core-tools@4 --unsafe-perm true
-
-# Clone repository
-git clone https://github.com/your-username/warung-tetangga-api.git
-cd warung-tetangga-api
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Initialize local settings
-func azure functionapp fetch-app-settings api-warungtetangga
-
-# Local development (will run on http://localhost:7071)
-func start
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+      - name: Deploy to Azure
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'Warung-Warga-api'
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
 ```
 
-#### Deploy to Azure
-```bash
-# Deploy function app
-func azure functionapp publish api-warungtetangga --python
+### Option 2: Azure Functions (Serverless)
 
-# Verify deployment
-curl https://api-warungtetangga.azurewebsites.net/health
+#### Advantages
+- ✅ Auto-scaling
+- ✅ Pay-per-execution
+- ✅ Built-in monitoring
+- ✅ Easy CI/CD integration
+
+#### Configuration
+```python
+# function_app.py
+import azure.functions as func
+from app.main import app
+
+def main(req: func.HttpRequest, context: func.Context) -> func.HttpResponse:
+    return func.AsgiMiddleware(app).handle(req, context)
 ```
 
-### Step 4: GitHub Actions CI/CD (Automated Deployment)
+### Option 3: Docker Container
 
-The repository includes `.github/workflows/azure-functions-deploy.yml` for automated deployment:
+#### Dockerfile
+```dockerfile
+FROM python:3.11-slim
 
-#### Setup GitHub Secrets
-1. Go to your GitHub repository
-2. Settings → Secrets and variables → Actions
-3. Add these secrets:
-   ```
-   AZURE_FUNCTIONAPP_PUBLISH_PROFILE
-   ```
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install -r requirements.txt
 
-#### Get Publish Profile
-```bash
-# Download publish profile
-az functionapp deployment list-publishing-profiles \
-  --name api-warungtetangga \
-  --resource-group warung-tetangga-rg \
-  --xml
+COPY . .
+
+EXPOSE 8000
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
 ```
 
-Copy the XML content and paste it as the `AZURE_FUNCTIONAPP_PUBLISH_PROFILE` secret.
-
-### Step 5: Production Verification
-
-#### Health Check
-```bash
-# Basic health check
-curl https://api-warungtetangga.azurewebsites.net/health
-
-# Expected response:
-# {
-#   "status": "healthy",
-#   "timestamp": "2024-01-15T10:30:00Z",
-#   "database": "connected",
-#   "azure_functions": {
-#     "environment": "production",
-#     "region": "Southeast Asia",
-#     "openapi_status": "working"
-#   },
-#   "documentation": {
-#     "swagger_ui": "https://api-warungtetangga.azurewebsites.net/docs",
-#     "openapi_json": "https://api-warungtetangga.azurewebsites.net/openapi.json",
-#     "status": "operational"
-#   }
-# }
+#### Docker Compose (Development)
+```yaml
+# docker-compose.yml
+version: '3.8'
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - SUPABASE_URL=${SUPABASE_URL}
+    env_file:
+      - .env
 ```
-
-#### API Documentation Verification ✅
-```bash
-# Verify Swagger UI is accessible
-curl -I https://api-warungtetangga.azurewebsites.net/docs
-# Expected: HTTP/200 OK
-
-# Verify OpenAPI JSON specification is available
-curl https://api-warungtetangga.azurewebsites.net/openapi.json
-# Expected: Complete OpenAPI 3.0 JSON schema
-
-# Test interactive documentation
-# Visit https://api-warungtetangga.azurewebsites.net/docs in browser
-# Should show working Swagger UI with all endpoints
-```
-
-#### API Documentation URLs ✅
-- **Interactive Docs**: https://api-warungtetangga.azurewebsites.net/docs ✅ **OpenAPI Working**
-- **OpenAPI Spec**: https://api-warungtetangga.azurewebsites.net/openapi.json ✅ **Available**
-- **API Reference**: https://api-warungtetangga.azurewebsites.net/redoc ✅ **ReDoc UI**
-
-#### Test Endpoints
-```bash
-# Test welcome endpoint
-curl https://api-warungtetangga.azurewebsites.net/
-
-# Expected response includes documentation_status: "OpenAPI Fixed & Working"
-
-# Test user registration
-curl -X POST https://api-warungtetangga.azurewebsites.net/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{"email":"test@example.com","password":"TestPass123!","full_name":"Test User"}'
-```
-
----
-
-## 📊 Monitoring & Analytics
-
-### Azure Application Insights
-- **Monitoring**: Automatic performance tracking
-- **Logs**: Real-time error monitoring
-- **Metrics**: Request count, response time, error rate
-- **Dashboard**: https://portal.azure.com (search for api-warungtetangga)
-- **API Docs Access**: Monitor `/docs` and `/openapi.json` endpoint usage
-
-### Key Metrics to Monitor
-- **Response Time**: < 500ms (warm start)
-- **Cold Start**: < 3 seconds
-- **Error Rate**: < 1%
-- **Availability**: > 99.9%
-- **Documentation Access**: API docs load time < 1 second
-
-### 🔧 OpenAPI-Specific Monitoring
-- **Documentation Requests**: Monitor `/docs` endpoint access
-- **Specification Downloads**: Track `/openapi.json` usage
-- **Client Generation**: Usage patterns for API client generation
-- **Developer Adoption**: API docs interaction metrics
 
 ---
 
 ## 🔒 Security Checklist
 
 ### Pre-Deployment Security
-- ✅ Environment variables stored securely (Azure Key Vault recommended)
-- ✅ API rate limiting configured
+- ✅ All secrets stored in environment variables
+- ✅ No hardcoded API keys in code
+- ✅ HTTPS enforced for all endpoints
 - ✅ CORS properly configured
-- ✅ HTTPS enforced (automatic in Azure Functions)
-- ✅ Authentication tokens with proper expiration
-- ✅ Database connection encrypted
-- ✅ File upload validation and size limits
-- ✅ **API Documentation**: Public access secured for developer usage
+- ✅ JWT tokens with reasonable expiration
+- ✅ Input validation on all endpoints
+- ✅ SQL injection prevention (SQLAlchemy ORM)
+- ✅ File upload restrictions implemented
 
 ### Post-Deployment Security
-- ✅ Monitor API access logs
-- ✅ Set up alerts for unusual traffic patterns
-- ✅ Regular security updates
-- ✅ Backup database regularly
-- ✅ Review and rotate API keys quarterly
-- ✅ **Monitor documentation access** untuk security analysis
+- ✅ Monitor access logs
+- ✅ Set up alerts for failed authentication
+- ✅ Regular security scans
+- ✅ Database connection encryption
+- ✅ API rate limiting (via Azure API Management)
 
 ---
 
-## 🚦 Alternative Deployment Options
+## 📊 Monitoring & Logging
 
-### Option 2: Azure App Service
-For consistent traffic and specific scaling requirements:
+### Azure Application Insights
+```python
+# app/config.py
+import logging
+from azure.monitor.opentelemetry.exporter import AzureMonitorLogExporter
 
+# Application Insights integration
+if AZURE_INSIGHTS_CONNECTION_STRING:
+    logging.getLogger().addHandler(
+        AzureMonitorLogExporter(
+            connection_string=AZURE_INSIGHTS_CONNECTION_STRING
+        )
+    )
+```
+
+### Health Check Monitoring
 ```bash
-# Create App Service Plan
-az appservice plan create \
-  --name warung-tetangga-plan \
-  --resource-group warung-tetangga-rg \
-  --location "Southeast Asia" \
-  --sku B1
+# Setup Azure Monitor alerts for:
+GET /health  # Should return 200 OK
+GET /       # Should return API info
 
-# Create Web App
-az webapp create \
-  --resource-group warung-tetangga-rg \
-  --plan warung-tetangga-plan \
-  --name warung-tetangga-api \
-  --runtime "PYTHON|3.11"
+# Database connectivity check
+# External service availability
 ```
 
-### Option 3: Docker Container
-For custom environments:
+### Log Analysis Queries
+```kusto
+// Application Insights KQL queries
+requests
+| where timestamp > ago(24h)
+| summarize count() by resultCode
+| render piechart
 
-```dockerfile
-FROM python:3.11-slim
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install -r requirements.txt
-COPY . .
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+exceptions
+| where timestamp > ago(7d)
+| summarize count() by problemId
+| order by count_ desc
 ```
 
 ---
 
-## 🎯 Production Optimization
+## 🚀 CI/CD Pipeline
 
-### Performance Tips
-1. **Cold Start Optimization**:
-   - Keep dependencies minimal
-   - Use connection pooling
-   - Implement proper caching
+### GitHub Actions Workflow (Complete)
+```yaml
+# .github/workflows/ci-cd.yml
+name: CI/CD Pipeline
 
-2. **Cost Optimization**:
-   - Monitor usage in Azure portal
-   - Use consumption plan for variable traffic
-   - Optimize database queries
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
 
-3. **Scaling Strategy**:
-   - Azure Functions auto-scales
-   - Database: Consider read replicas for high traffic
-   - Storage: Use CDN for static assets
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pytest pytest-asyncio
+      
+      - name: Run tests
+        run: |
+          python -m pytest tests/ -v --tb=short
+        env:
+          DATABASE_URL: sqlite:///./test.db
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Deploy to Azure App Service
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'Warung-Warga-api'
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: .
+```
 
 ---
 
-## 🔧 Troubleshooting
+## 🗄️ Database Migration
+
+### Production Database Setup
+```sql
+-- Enable PostGIS extension
+CREATE EXTENSION IF NOT EXISTS postgis;
+
+-- Create profiles table
+CREATE TABLE profiles (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    supabase_user_id UUID UNIQUE NOT NULL,
+    full_name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    phone VARCHAR(20),
+    address TEXT,
+    location GEOGRAPHY(POINT, 4326),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Create listings table
+-- (Full schema in app/models/lapak.py)
+
+-- Create group_buys table
+-- (Full schema in app/models/borongan.py)
+
+-- Create group_buy_participants table
+-- (Full schema in app/models/borongan.py)
+```
+
+### Migration Commands
+```bash
+# Alembic migration (if using)
+alembic upgrade head
+
+# Manual SQL execution via Supabase dashboard
+# Or via psql connection
+```
+
+---
+
+## 🔧 Performance Optimization
+
+### Database Optimization
+```python
+# app/database.py
+from sqlalchemy import create_engine
+from sqlalchemy.pool import QueuePool
+
+engine = create_engine(
+    DATABASE_URL,
+    poolclass=QueuePool,
+    pool_size=10,
+    max_overflow=20,
+    pool_pre_ping=True,
+    pool_recycle=300
+)
+```
+
+### Caching Strategy
+```python
+# Redis caching untuk production
+from redis import Redis
+import json
+
+redis_client = Redis.from_url(REDIS_URL)
+
+def cache_nearby_lapak(lat: float, lon: float, radius: int, data: dict):
+    cache_key = f"nearby:{lat}:{lon}:{radius}"
+    redis_client.setex(cache_key, 300, json.dumps(data))  # 5 min cache
+```
+
+### CDN Configuration
+```bash
+# Azure CDN untuk static assets
+# Configure Azure Blob Storage dengan CDN endpoint
+# Cache policy: 1 hour untuk images, 1 day untuk static files
+```
+
+---
+
+## 🧪 Testing in Production
+
+### Smoke Tests
+```bash
+# Production health check
+curl https://api.warungwarga.com/health
+
+# Authentication test
+curl -X POST https://api.warungwarga.com/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"test@example.com","password":"testpass"}'
+
+# Protected endpoint test
+curl -H "Authorization: Bearer $TOKEN" \
+  https://api.warungwarga.com/users/users/me
+```
+
+### Load Testing
+```bash
+# Apache Bench
+ab -n 1000 -c 10 https://api.warungwarga.com/health
+
+# Artillery.js
+artillery run load-test.yml
+```
+
+---
+
+## 📞 Troubleshooting
 
 ### Common Issues
 
-#### 1. Function App Not Starting
+#### 1. Database Connection Failed
 ```bash
-# Check logs
-func azure functionapp logstream api-warungtetangga
+# Check Supabase connection
+psql "postgresql://postgres:password@host:5432/database"
 
-# Check configuration
-az functionapp config show --name api-warungtetangga --resource-group warung-tetangga-rg
+# Verify connection string in environment
+echo $DATABASE_URL
 ```
 
-#### 2. Database Connection Issues
+#### 2. Azure Blob Storage Issues
 ```bash
-# Test connection string
-python -c "
-import psycopg2
-conn = psycopg2.connect('your-database-url')
-print('Database connected successfully')
-"
+# Test Azure connection
+from azure.storage.blob import BlobServiceClient
+client = BlobServiceClient.from_connection_string(connection_string)
+client.list_containers()
 ```
 
-#### 3. ✅ RESOLVED: OpenAPI Documentation Issues
-**Previous Issue**: `/docs` and `/openapi.json` endpoints returning "Not Found"  
-**Solution Applied**:
-- ✅ Fixed Azure Functions handler untuk proper path extraction
-- ✅ Updated FastAPI app configuration dengan correct `root_path`
-- ✅ Configured ASGI scope untuk proper documentation endpoints
-
-**Current Status**: ✅ **FULLY WORKING**
-
-```bash
-# Verify documentation is working
-curl -I https://api-warungtetangga.azurewebsites.net/docs
-curl https://api-warungtetangga.azurewebsites.net/openapi.json
-```
-
-#### 4. CORS Issues
-Ensure allowed origins are configured in `app/main.py`:
+#### 3. CORS Errors
 ```python
+# Update CORS origins in app/main.py
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://yourdomain.com"],
+    allow_origins=["https://yourdomain.com"],  # Update this
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 ```
 
-### Support Channels
-- **Technical Issues**: dzakwanalifi@apps.ipb.ac.id
-- **Azure Support**: Azure Portal → Support
-- **Database Issues**: Supabase Dashboard → Support
-- **API Documentation**: Working at https://api-warungtetangga.azurewebsites.net/docs
+#### 4. Payment Webhook Not Working
+```bash
+# Ensure webhook URL is publicly accessible
+# Check Tripay webhook logs in dashboard
+# Verify HMAC signature validation
+```
+
+### Support Contacts
+- **Azure Support**: Azure Portal > Support
+- **Supabase Support**: support@supabase.io
+- **Tripay Support**: support@tripay.co.id
 
 ---
 
-## 📈 Roadmap
+## 📈 Scaling Considerations
 
-### Phase 1: MVP (Current) ✅
-- ✅ Basic API endpoints
-- ✅ Authentication & user management
-- ✅ Product listings with geo-search
-- ✅ Group buying functionality
-- ✅ Payment integration
-- ✅ Azure Functions deployment
-- ✅ **OpenAPI Documentation Fixed & Working**
+### Auto-Scaling Rules
+```bash
+# Azure App Service scaling rules
+az monitor autoscale create \
+  --resource-group Warung-Warga-rg \
+  --resource Warung-Warga-api \
+  --min-count 1 \
+  --max-count 10 \
+  --count 2
+```
 
-### Phase 2: Enhancement
-- [ ] Advanced search and filtering
-- [ ] Real-time notifications
-- [ ] Analytics dashboard
-- [ ] Mobile app APIs
-- [ ] Admin panel APIs
-- [ ] **Enhanced API documentation** with examples & tutorials
+### Database Scaling
+- Supabase Pro plan untuk production
+- Read replicas untuk heavy read workloads
+- Connection pooling optimization
 
-### Phase 3: Scale
-- [ ] Microservices architecture
-- [ ] Advanced caching strategies
-- [ ] Multi-region deployment
-- [ ] Advanced monitoring and alerting
-- [ ] **API versioning** dengan backward compatibility
+### Future Enhancements
+- ✅ Redis caching layer
+- ✅ Message queue (Azure Service Bus)
+- ✅ Microservices architecture
+- ✅ API versioning
+- ✅ GraphQL endpoints
 
 ---
 
-**🚀 Deployment Guide Complete!**
+## ✅ Deployment Checklist
 
-*Production URL: https://api-warungtetangga.azurewebsites.net*  
-*Interactive Documentation: https://api-warungtetangga.azurewebsites.net/docs ✅ OpenAPI Fixed*  
-*OpenAPI Specification: https://api-warungtetangga.azurewebsites.net/openapi.json ✅ Working*  
-*For technical support: dzakwanalifi@apps.ipb.ac.id*  
-*Last Updated: January 2024 - OpenAPI Documentation Fixed*
+### Pre-Deployment
+- [ ] All environment variables configured
+- [ ] Database migrations applied
+- [ ] SSL certificate configured
+- [ ] Domain DNS configured
+- [ ] External services tested
+- [ ] Security review completed
+
+### Deployment
+- [ ] Code deployed via CI/CD
+- [ ] Health checks passing
+- [ ] API documentation accessible
+- [ ] Monitoring configured
+- [ ] Backup strategy implemented
+
+### Post-Deployment
+- [ ] Smoke tests completed
+- [ ] Load testing performed
+- [ ] Error monitoring active
+- [ ] Performance metrics baseline
+- [ ] Team notification sent
+
+---
+
+**🎉 Deployment Complete! Warung Warga API is Production Ready! 🚀**
+
+*Last Updated: January 2024* 

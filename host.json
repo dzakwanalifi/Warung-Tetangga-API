@@ -12,8 +12,10 @@
     "id": "Microsoft.Azure.Functions.ExtensionBundle",
     "version": "[3.*, 4.0.0)"
   },
-  "functions": ["function"],
-  "http": {
-    "routePrefix": ""
+  "functionTimeout": "00:05:00",
+  "extensions": {
+    "http": {
+      "routePrefix": ""
+    }
   }
 }

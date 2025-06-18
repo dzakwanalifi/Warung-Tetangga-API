@@ -1,7 +1,7 @@
-# Tests Documentation for Warung Tetangga API
+# Tests Documentation for Warung Warga API
 
 ## Overview
-This directory contains comprehensive tests for the Warung Tetangga API, covering all core payment processing features, authentication, and basic API functionality.
+This directory contains comprehensive tests for the Warung Warga API, covering all core payment processing features, authentication, and basic API functionality.
 
 ## Test Structure
 
