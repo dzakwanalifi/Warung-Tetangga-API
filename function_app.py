@@ -1,39 +1,43 @@
-# function_app.py
-
 import logging
 import azure.functions as func
-from app.main import app as fastapi_app
+from azure.functions import AsgiMiddleware
 
-# Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Buat instance Function App menggunakan Azure Functions v2 programming model
-app = func.FunctionApp(http_auth_level=func.AuthLevel.ANONYMOUS)
+try:
+    # Import from the fixed version with real routers
+    from app.main_production_full_fixed import app as fastapi_app
+    logger.info("✅ FastAPI app imported successfully from main_production_full_fixed")
+    logger.info(f"✅ App routes count: {len(fastapi_app.routes)}")
+    logger.info(f"✅ App router count: {len([r for r in fastapi_app.routes if hasattr(r, 'path') and r.path.startswith(('/auth', '/users', '/lapak', '/borongan', '/payments'))])}")
+except Exception as e:
+    logger.error(f"❌ Failed to import FastAPI app: {e}")
+    import traceback
+    logger.error(f"❌ Full traceback: {traceback.format_exc()}")
+    raise
 
-# HTTP trigger function yang menangani semua request dan meneruskannya ke FastAPI
-@app.route(route="{*route}")
-def main(req: func.HttpRequest) -> func.HttpResponse:
-    """
-    HTTP trigger function yang menangani semua request dan meneruskannya ke FastAPI.
-    
-    Args:
-        req: HTTP request dari Azure Functions
-        
-    Returns:
-        HTTP response yang sudah diproses oleh FastAPI
-    """
-    logger.info(f"Processing request: {req.method} {req.url}")
-    
+# Create the function app
+app = func.FunctionApp()
+
+@app.function_name(name="HttpTrigger")
+@app.route(route="{*route}", auth_level=func.AuthLevel.ANONYMOUS, methods=["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"])
+def http_trigger(req: func.HttpRequest) -> func.HttpResponse:
+    """Azure Function yang menangani HTTP requests dan meneruskannya ke FastAPI"""
     try:
-        # Gunakan AsgiMiddleware untuk menjalankan FastAPI app
-        asgi_middleware = func.AsgiMiddleware(fastapi_app)
-        response = asgi_middleware.handle(req)
+        logger.info(f"Request: {req.method} {req.url}")
+        
+        # Gunakan AsgiMiddleware untuk menangani request dengan FastAPI
+        response = AsgiMiddleware(fastapi_app).handle(req)
+        
         logger.info(f"Response status: {response.status_code}")
         return response
+        
     except Exception as e:
-        logger.error(f"Error processing request: {str(e)}")
+        logger.error(f"Error in http_trigger: {e}")
+        import traceback
+        logger.error(f"Full traceback: {traceback.format_exc()}")
         return func.HttpResponse(
-            f"Error: {str(e)}",
+            f"Internal Server Error: {str(e)}",
             status_code=500
         ) 

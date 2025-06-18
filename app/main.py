@@ -1,5 +1,5 @@
 # app/main.py
-
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -15,7 +15,9 @@ from .models.group_buy_participant import GroupBuyParticipant
 # Membuat semua tabel yang terikat pada Base
 # Ini sebaiknya dipindahkan ke skrip migrasi (e.g., Alembic) untuk produksi,
 # tapi untuk MVP ini sudah cukup.
-Base.metadata.create_all(bind=engine)
+# Skip database initialization in Azure Functions
+if not os.environ.get("SKIP_DB_INIT"):
+    Base.metadata.create_all(bind=engine)
 
 # Buat instance aplikasi FastAPI
 app = FastAPI(

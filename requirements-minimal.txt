@@ -1,0 +1,4 @@
+azure-functions==1.23.0
+fastapi==0.115.13
+pydantic==2.11.7
+uvicorn==0.34.3 
