@@ -1,5 +1,6 @@
 # app/routers/users.py
 
+import uuid
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
@@ -22,7 +23,10 @@ def read_users_me(current_user = Depends(get_current_user), db: Session = Depend
     """
     Mendapatkan profil dari pengguna yang sedang login.
     """
-    profile = db.query(Profile).filter(Profile.id == current_user.id).first()
+    # Convert current_user.id string to UUID
+    current_user_uuid = uuid.UUID(current_user.id) if isinstance(current_user.id, str) else current_user.id
+    
+    profile = db.query(Profile).filter(Profile.id == current_user_uuid).first()
     if not profile:
         raise HTTPException(status_code=404, detail="Profile not found")
     return profile
@@ -38,7 +42,10 @@ def update_users_me(
     Memperbarui profil dari pengguna yang sedang login.
     Termasuk memperbarui lokasi (lat/lon).
     """
-    profile = db.query(Profile).filter(Profile.id == current_user.id).first()
+    # Convert current_user.id string to UUID
+    current_user_uuid = uuid.UUID(current_user.id) if isinstance(current_user.id, str) else current_user.id
+    
+    profile = db.query(Profile).filter(Profile.id == current_user_uuid).first()
     if not profile:
         raise HTTPException(status_code=404, detail="Profile not found")
 

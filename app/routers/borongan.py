@@ -69,6 +69,9 @@ def create_borongan(
     db: Session = Depends(get_db)
 ):
     """Create a new group buying session"""
+    # Convert current_user.id string to UUID
+    current_user_uuid = uuid.UUID(current_user.id) if isinstance(current_user.id, str) else current_user.id
+    
     new_borongan = GroupBuy(
         title=borongan_data.title,
         description=borongan_data.description,
@@ -77,7 +80,7 @@ def create_borongan(
         target_quantity=borongan_data.target_quantity,
         deadline=borongan_data.deadline,
         pickup_point_address=borongan_data.pickup_point_address,
-        supplier_id=current_user.id,
+        supplier_id=current_user_uuid,
         status='active'
     )
     
@@ -156,6 +159,9 @@ def join_borongan(
     """
     Mengizinkan pengguna yang login untuk bergabung dalam sesi borongan dengan integrasi Tripay.
     """
+    # Convert current_user.id string to UUID for comparison
+    current_user_uuid = uuid.UUID(current_user.id) if isinstance(current_user.id, str) else current_user.id
+    
     # Gunakan .with_for_update() untuk mengunci baris group_buy selama transaksi
     # Ini mencegah kondisi race condition jika dua orang join bersamaan.
     borongan = db.query(GroupBuy).filter(GroupBuy.id == group_buy_id).with_for_update().first()
@@ -167,13 +173,13 @@ def join_borongan(
         raise HTTPException(status_code=400, detail="This group buy is no longer active.")
     if borongan.deadline <= datetime.now(timezone.utc):
         raise HTTPException(status_code=400, detail="The deadline for this group buy has passed.")
-    if borongan.supplier_id == current_user.id:
+    if borongan.supplier_id == current_user_uuid:
         raise HTTPException(status_code=400, detail="You cannot join a group buy that you created.")
 
     # Cek apakah user sudah join sebelumnya
     existing_participant = db.query(GroupBuyParticipant).filter(
         GroupBuyParticipant.group_buy_id == group_buy_id,
-        GroupBuyParticipant.user_id == current_user.id
+        GroupBuyParticipant.user_id == current_user_uuid
     ).first()
     if existing_participant:
         raise HTTPException(status_code=400, detail="You have already joined this group buy.")
@@ -194,7 +200,7 @@ def join_borongan(
     # 2. Buat entri partisipan baru dengan status pending payment
     new_participant = GroupBuyParticipant(
         group_buy_id=group_buy_id,
-        user_id=current_user.id,
+        user_id=current_user_uuid,
         quantity_ordered=join_data.quantity_ordered,
         total_price=total_price,
         payment_status='pending'  # Status pending sampai payment dikonfirmasi
@@ -221,7 +227,7 @@ def join_borongan(
     # --- Integrasi Tripay ---
     try:
         # Dapatkan profil user untuk nama lengkap
-        user_profile = db.query(Profile).filter(Profile.id == current_user.id).first()
+        user_profile = db.query(Profile).filter(Profile.id == current_user_uuid).first()
         if not user_profile:
             raise HTTPException(status_code=404, detail="User profile not found")
 

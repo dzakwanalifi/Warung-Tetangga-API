@@ -135,3 +135,6 @@ logs/
 .vscode/settings.json
 .idea/workspace.xml 
 .python_packages
+configure-azure-env.ps1
+set-azure-vars.cmd
+settings.json

@@ -166,7 +166,10 @@ def update_lapak(
     if not listing:
         raise HTTPException(status_code=404, detail="Lapak not found")
     
-    if listing.seller_id != current_user.id:
+    # Convert current_user.id string to UUID for comparison
+    current_user_uuid = uuid.UUID(current_user.id) if isinstance(current_user.id, str) else current_user.id
+    
+    if listing.seller_id != current_user_uuid:
         raise HTTPException(status_code=403, detail="Not authorized to update this lapak")
 
     # Update hanya field yang diberikan (exclude_unset=True)
