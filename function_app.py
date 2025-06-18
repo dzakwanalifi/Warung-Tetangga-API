@@ -6,9 +6,9 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 try:
-    # Import from the fixed version with real routers
-    from app.main_production_full_fixed import app as fastapi_app
-    logger.info("✅ FastAPI app imported successfully from main_production_full_fixed")
+    # Import from the main file (now contains the fixed production version)
+    from app.main import app as fastapi_app
+    logger.info("✅ FastAPI app imported successfully from main")
     logger.info(f"✅ App routes count: {len(fastapi_app.routes)}")
     logger.info(f"✅ App router count: {len([r for r in fastapi_app.routes if hasattr(r, 'path') and r.path.startswith(('/auth', '/users', '/lapak', '/borongan', '/payments'))])}")
 except Exception as e:
