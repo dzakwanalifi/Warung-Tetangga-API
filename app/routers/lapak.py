@@ -12,33 +12,63 @@ from ..models.listing import Listing
 from ..models.profile import Profile
 from ..schemas.lapak import LapakCreate, LapakSchema, LapakListResponse, LapakUpdate
 from ..services import azure_storage
-from ..services.gemini import analyze_image_from_file, LapakAnalysisResult
+from ..services.gemini import (
+    analyze_image_from_file, 
+    analyze_photo_comprehensive,
+    analyze_multiple_photos,
+    LapakAnalysisResult,
+    EnhancedAnalysisResult
+)
 
 router = APIRouter()
 
-@router.post("/analyze", response_model=LapakAnalysisResult, tags=["AI"])
-def analyze_image(
-    image: UploadFile = File(...),
+@router.post("/analyze", response_model=EnhancedAnalysisResult, tags=["AI"])
+def analyze_images(
+    images: List[UploadFile] = File(...),
     current_user = Depends(get_current_user)
 ):
     """
-    Menerima file gambar, menganalisisnya langsung dengan Gemini,
-    dan mengembalikan saran untuk form lapak.
+    Menganalisis foto produk secara komprehensif termasuk:
+    - Identifikasi produk dan saran harga
+    - Evaluasi kualitas foto (pencahayaan, komposisi, fokus, dll)
+    - Insights actionable untuk meningkatkan foto
+    - Rekomendasi untuk meningkatkan penjualan
+    - Support untuk single atau multiple foto (maksimal 5)
     """
-    # Validasi file type
-    if not image.content_type or not image.content_type.startswith('image/'):
-        raise HTTPException(status_code=400, detail="File must be an image")
+    # Validasi minimal 1 foto
+    if not images or len(images) == 0:
+        raise HTTPException(status_code=400, detail="At least one image is required")
+    
+    # Validasi semua file adalah gambar
+    for i, image in enumerate(images):
+        if not image.content_type or not image.content_type.startswith('image/'):
+            raise HTTPException(
+                status_code=400, 
+                detail=f"File {i+1} must be an image"
+            )
+    
+    # Batasi maksimal 5 foto untuk performa
+    if len(images) > 5:
+        raise HTTPException(
+            status_code=400, 
+            detail="Maximum 5 images allowed per analysis"
+        )
     
     try:
-        # Panggil fungsi service yang baru - langsung analisis tanpa upload ke Azure
-        analysis_result = analyze_image_from_file(image)
+        # Jika hanya 1 foto, gunakan analyze_photo_comprehensive
+        # Jika multiple foto, gunakan analyze_multiple_photos
+        if len(images) == 1:
+            analysis_result = analyze_photo_comprehensive(images[0])
+        else:
+            analysis_result = analyze_multiple_photos(images)
+        
         return analysis_result
         
     except ValueError as e:
         raise HTTPException(status_code=500, detail=str(e))
     except Exception as e:
         print(f"Unexpected error in image analysis: {e}")
-        raise HTTPException(status_code=500, detail="Failed to analyze image")
+        raise HTTPException(status_code=500, detail="Failed to analyze images")
 
 @router.post("", status_code=status.HTTP_201_CREATED, response_model=LapakSchema)
 def create_lapak(
