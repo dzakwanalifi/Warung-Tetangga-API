@@ -59,6 +59,7 @@ class BoronganDetailSchema(BaseModel):
 # --- Skema untuk menampilkan borongan dalam daftar ---
 class BoronganSummarySchema(BaseModel):
     id: uuid.UUID
+    supplier_id: uuid.UUID
     title: str
     description: Optional[str] = None
     price_per_unit: Decimal

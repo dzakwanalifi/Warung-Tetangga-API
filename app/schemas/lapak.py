@@ -26,7 +26,7 @@ class LapakUpdate(BaseModel):
 # Skema dasar untuk menampilkan informasi lapak
 class LapakSchema(BaseModel):
     id: uuid.UUID
-    # seller_id: uuid.UUID  # Kita ganti ini dengan objek seller
+    seller_id: uuid.UUID
     title: str
     description: Optional[str] = None
     price: Decimal
@@ -34,11 +34,18 @@ class LapakSchema(BaseModel):
     stock_quantity: int
     image_urls: Optional[List[str]] = None
     status: str
-    seller: ProfileInLapakSchema  # Tambahkan ini
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
+    created_at: str
+    updated_at: str
+    seller: ProfileInLapakSchema
 
     class Config:
         from_attributes = True
 
 # Skema untuk respons endpoint /lapak/nearby
 class LapakListResponse(BaseModel):
-    items: List[LapakSchema] 
+    lapak: List[LapakSchema]
+    total: int
+    page: int = 1
+    limit: int = 12 

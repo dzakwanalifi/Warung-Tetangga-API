@@ -46,6 +46,7 @@ def get_active_borongan(db: Session = Depends(get_db)):
         
         borongan_summary = BoronganSummarySchema(
             id=borongan.id,
+            supplier_id=borongan.supplier_id,
             title=borongan.title,
             description=borongan.description,
             price_per_unit=borongan.price_per_unit,
@@ -105,6 +106,49 @@ def create_borongan(
         status=new_borongan.status,
         created_at=new_borongan.created_at
     )
+
+@router.get("/my", response_model=BoronganListResponse)
+def get_my_borongan(
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
+):
+    """Get all borongan created by the current user"""
+    # Convert current_user.id string to UUID
+    current_user_uuid = uuid.UUID(current_user.id) if isinstance(current_user.id, str) else current_user.id
+    
+    # Query borongan created by current user, ordered by creation date (newest first)
+    my_borongan = db.query(GroupBuy).filter(
+        GroupBuy.supplier_id == current_user_uuid
+    ).order_by(GroupBuy.created_at.desc()).all()
+    
+    borongan_list = []
+    for borongan in my_borongan:
+        participants_count = db.query(GroupBuyParticipant).filter(
+            GroupBuyParticipant.group_buy_id == borongan.id
+        ).count()
+        
+        total_ordered = db.query(GroupBuyParticipant).filter(
+            GroupBuyParticipant.group_buy_id == borongan.id
+        ).with_entities(func.sum(GroupBuyParticipant.quantity_ordered)).scalar() or 0
+        
+        borongan_summary = BoronganSummarySchema(
+            id=borongan.id,
+            supplier_id=borongan.supplier_id,
+            title=borongan.title,
+            description=borongan.description,
+            price_per_unit=borongan.price_per_unit,
+            unit=borongan.unit,
+            target_quantity=borongan.target_quantity,
+            current_quantity=total_ordered,
+            participants_count=participants_count,
+            deadline=borongan.deadline,
+            pickup_point_address=borongan.pickup_point_address,
+            status=borongan.status,
+            created_at=borongan.created_at
+        )
+        borongan_list.append(borongan_summary)
+    
+    return BoronganListResponse(borongan=borongan_list)
 
 @router.get("/{borongan_id}", response_model=BoronganDetailSchema)
 def get_borongan_detail(borongan_id: str, db: Session = Depends(get_db)):
