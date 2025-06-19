@@ -12,7 +12,9 @@ from ..core.config import settings
 class LapakAnalysisResult(BaseModel):
     title: str = Field(description="Judul produk yang disarankan dalam Bahasa Indonesia.")
     description: str = Field(description="Deskripsi produk yang ramah dan sederhana dalam Bahasa Indonesia.")
+    suggested_price: int = Field(description="Harga yang disarankan dalam Rupiah (tanpa desimal).")
     unit: str = Field(description="Satuan jual yang umum untuk produk ini (e.g., kg, buah, ikat, botol, porsi).")
+    category: str = Field(description="Kategori produk (Makanan, Minuman, Sayuran, Buah, Produk Kebun, Kue, atau Lainnya).")
 
 # --- Konfigurasi Klien Gemini ---
 # Menggunakan API Key dari environment variables yang sudah di-load oleh config.py
@@ -53,10 +55,17 @@ def analyze_image_from_file(file: UploadFile) -> LapakAnalysisResult:
         
         Berikan respons dalam format JSON dengan struktur:
         {
-            "title": "nama produk yang menarik",
-            "description": "deskripsi singkat dan menarik",
-            "unit": "satuan yang tepat (kg, buah, ikat, botol, porsi, dll)"
+            "title": "nama produk yang menarik dan spesifik",
+            "description": "deskripsi singkat, menarik dan informatif (2-3 kalimat)",
+            "suggested_price": harga_yang_wajar_dalam_rupiah_tanpa_desimal,
+            "unit": "satuan yang tepat (kg, buah, ikat, botol, porsi, pcs, dll)",
+            "category": "kategori yang sesuai (Makanan, Minuman, Sayuran, Buah, Produk Kebun, Kue, atau Lainnya)"
         }
+        
+        Petunjuk:
+        - Untuk harga, pertimbangkan harga pasar Indonesia yang wajar dan terjangkau
+        - Untuk kategori, pilih yang paling sesuai dari: Makanan, Minuman, Sayuran, Buah, Produk Kebun, Kue, Lainnya
+        - Buat deskripsi yang menarik dan informatif untuk meyakinkan pembeli
         """
         
         # Panggil API dengan part gambar
@@ -79,7 +88,9 @@ def analyze_image_from_file(file: UploadFile) -> LapakAnalysisResult:
         return LapakAnalysisResult(
             title="Produk Segar",
             description="Produk berkualitas dari tetangga terdekat. Silakan hubungi penjual untuk detail lebih lanjut.",
-            unit="buah"
+            suggested_price=15000,
+            unit="pcs",
+            category="Lainnya"
         )
 
 # --- Fungsi lama untuk backward compatibility (akan dihapus nanti) ---
@@ -91,5 +102,7 @@ def analyze_image_for_lapak(image_url: str) -> LapakAnalysisResult:
     return LapakAnalysisResult(
         title="Produk Segar",
         description="Produk berkualitas dari tetangga terdekat. Silakan hubungi penjual untuk detail lebih lanjut.",
-        unit="buah"
+        suggested_price=15000,
+        unit="pcs",
+        category="Lainnya"
     ) 
